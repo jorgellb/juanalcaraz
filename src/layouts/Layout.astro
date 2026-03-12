@@ -1,0 +1,319 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import type { CollectionEntry } from 'astro:content';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import VideoModal from '../components/VideoModal.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  project?: CollectionEntry<'projects'>;
+}
+
+const {
+  title,
+  description = 'Juan Alcazar - Cineasta',
+  image = '/og-default.jpg',
+  type = 'website'
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Juan Alcazar',
+  url: 'https://laoveja.es',
+  jobTitle: 'Cineasta',
+  sameAs: [
+    'https://vimeo.com/juanalcaraz',
+    'https://www.instagram.com/juanalcarazcine/',
+    'https://www.linkedin.com/in/juan-alcaraz-b84724174/'
+  ]
+};
+---
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="canonical" href={canonicalURL} />
+    
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(image, Astro.site)} />
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalURL} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(image, Astro.site)} />
+    
+    <ClientRouter />
+    
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    
+    {type === 'website' && (
+      <script is:inline type="application/ld+json" set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: 'Juan Alcazar',
+        url: 'https://laoveja.es',
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: 'https://laoveja.es/proyectos?q={search_term_string}',
+          'query-input': 'required name=search_term_string'
+        }
+      })} />
+    )}
+  </head>
+  
+  <body>
+    <div id="preloader" class="preloader">
+      <div class="preloader-content">
+        <div class="logo-wrap">
+          <h2 class="elementor-heading-title elementor-size-default flicker">JUAN ALCARAZ</h2>
+          <span class="role flicker-slow">CINEASTA</span>
+        </div>
+        <div class="loader-bar"></div>
+      </div>
+    </div>
+
+    <div class="spotlight" id="spotlight"></div>
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+    <div class="grain-overlay"></div>
+    
+    <Header />
+    
+    <main id="content" class="content-entrance">
+      <slot />
+    </main>
+
+    <VideoModal />
+    
+    <style is:global>
+      @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600&family=Manrope:wght@200;400;700&family=Playfair+Display:ital@1&display=swap');
+
+      :root {
+        --mouse-x: 50%;
+        --mouse-y: 50%;
+      }
+
+      .preloader {
+        position: fixed;
+        inset: 0;
+        background: #000;
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 1.2s cubic-bezier(0.7, 0, 0.3, 1), visibility 1.2s;
+        perspective: 1000px;
+      }
+
+      .preloader.fade-out {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      .logo-wrap {
+        text-align: center;
+        transform: translateZ(50px);
+      }
+
+      .elementor-heading-title {
+        font-family: var(--font-display);
+        font-size: clamp(2.5rem, 8vw, 4.5rem);
+        font-weight: 700;
+        letter-spacing: 0.3em;
+        margin: 0;
+        line-height: 1;
+        color: #ffffff;
+        text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+      }
+
+      .role {
+        font-family: var(--font-alt);
+        font-size: 0.75rem;
+        letter-spacing: 1.5em;
+        color: rgba(255, 255, 255, 0.5);
+        margin-top: 1rem;
+        display: block;
+        text-align: center;
+        padding-left: 1.5em;
+      }
+
+      /* Cinematic Flickering */
+      .flicker {
+        animation: cinematic-flicker 4s infinite;
+      }
+
+      .flicker-slow {
+        animation: cinematic-flicker 6s infinite 1s;
+      }
+
+      @keyframes cinematic-flicker {
+        0%, 100% { opacity: 1; }
+        3% { opacity: 0.8; }
+        6% { opacity: 1; }
+        7% { opacity: 0.9; }
+        8% { opacity: 1; }
+        45% { opacity: 1; }
+        46% { opacity: 0.95; }
+        47% { opacity: 1; }
+      }
+
+      .loader-bar {
+        width: 200px;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.05);
+        margin: 3rem auto 0;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .loader-bar::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, transparent, #fff, transparent);
+        transform: translateX(-100%);
+        animation: loading-slide 2.5s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+      }
+
+      @keyframes loading-slide {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+      }
+
+      /* Content Entrance */
+      .content-entrance {
+        opacity: 0;
+        transform: scale(1.02);
+        filter: blur(5px);
+        transition: opacity 1.5s cubic-bezier(0.7, 0, 0.3, 1), transform 1.5s cubic-bezier(0.7, 0, 0.3, 1), filter 1.5s ease;
+      }
+
+      body.loaded .content-entrance {
+        opacity: 1;
+        transform: scale(1);
+        filter: blur(0);
+      }
+
+      .cursor-dot, .cursor-outline {
+        pointer-events: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        z-index: 9999;
+        transition: opacity 0.5s ease;
+      }
+
+      .cursor-dot {
+        width: 4px;
+        height: 4px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+      }
+
+      .cursor-outline {
+        width: 40px;
+        height: 40px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+      }
+
+      .grain-overlay {
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3%3Ffilter id='n' %3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        opacity: 0.05;
+        pointer-events: none;
+        z-index: 10001;
+      }
+
+      @media (max-width: 768px) {
+        .cursor-dot, .cursor-outline, .spotlight { display: none; }
+      }
+    </style>
+
+    <script is:inline>
+      (function() {
+        const preloader = document.getElementById('preloader');
+        
+        function hidePreloader() {
+          if (preloader && !preloader.classList.contains('fade-out')) {
+            preloader.classList.add('fade-out');
+            document.body.classList.add('loaded');
+            setTimeout(() => { preloader.style.display = 'none'; }, 800);
+          }
+        }
+
+        // Fast hide on load
+        if (document.readyState === 'complete') {
+          hidePreloader();
+        } else {
+          window.addEventListener('load', hidePreloader);
+        }
+
+        // Emergency fail-safe (reduced to 1.5s)
+        setTimeout(hidePreloader, 1500);
+
+        // Optimized Mouse Tracking
+        const dot = document.querySelector('.cursor-dot');
+        const outline = document.querySelector('.cursor-outline');
+        
+        window.addEventListener('mousemove', (e) => {
+          const { clientX, clientY } = e;
+          document.documentElement.style.setProperty('--mouse-x', `${clientX}px`);
+          document.documentElement.style.setProperty('--mouse-y', `${clientY}px`);
+          
+          if (dot) {
+            dot.style.left = `${clientX}px`;
+            dot.style.top = `${clientY}px`;
+          }
+          if (outline) {
+            outline.animate({
+              left: `${clientX}px`,
+              top: `${clientY}px`
+            }, { duration: 400, fill: "forwards", easing: "ease-out" });
+          }
+        });
+
+        // Instant activation for page swaps (View Transitions)
+        document.addEventListener('astro:after-swap', () => {
+          document.body.classList.add('loaded');
+          const p = document.getElementById('preloader');
+          if (p) p.style.display = 'none';
+        });
+
+        // Intersection Observer for magic reveals
+        const revealObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('active');
+            }
+          });
+        }, { threshold: 0.1 });
+
+        const observe = () => document.querySelectorAll('.magic-reveal').forEach(el => revealObserver.observe(el));
+        observe();
+        document.addEventListener('astro:page-load', observe);
+      })();
+    </script>
+  </body>
+</html>

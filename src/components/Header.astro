@@ -1,0 +1,392 @@
+---
+const currentPath = Astro.url.pathname;
+
+const navItems = [
+  { href: '/', label: 'Inicio', sub: 'Home Reel' },
+  { href: '/proyectos', label: 'Proyectos', sub: 'Obras Seleccionadas' },
+  { href: '/biofilmografia', label: 'Biografía', sub: 'Trayectoria & Cine' },
+  { href: '/contacto', label: 'Contacto', sub: 'Colaboraciones' }
+];
+---
+
+<header class="header" id="main-header">
+  <div class="header-inner">
+    <div class="logo-container">
+      <a href="/" class="logo-link">
+        <h2 class="elementor-heading-title premium-logo">JUAN ALCARAZ</h2>
+      </a>
+      <span class="role flicker-slow">CINEASTA</span>
+    </div>
+
+    <button class="menu-btn" id="menu-toggle" aria-label="Abrir menú">
+      <div class="btn-hover-bg"></div>
+      <span class="menu-text">EXPLORE</span>
+      <div class="hamburger">
+        <span class="line l1"></span>
+        <span class="line l2"></span>
+      </div>
+    </button>
+  </div>
+
+  <nav class="full-menu" id="full-menu">
+    <div class="menu-background">
+      <div class="vignette"></div>
+      <div class="noise"></div>
+    </div>
+    <div class="menu-content">
+      <div class="menu-nav">
+        <ul class="nav-list">
+          {navItems.map((item, index) => (
+            <li class="nav-item">
+              <a href={item.href} class:list={['nav-link', { active: currentPath === item.href }]}>
+                <span class="nav-index">0{index + 1}</span>
+                <div class="nav-text-container">
+                  <span class="nav-label">{item.label}</span>
+                  <span class="nav-sub">{item.sub}</span>
+                </div>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="menu-footer">
+        <div class="social-row">
+          <a href="https://vimeo.com/juanalcaraz" target="_blank" class="f-link">VIMEO</a>
+          <span class="sep">/</span>
+          <a href="https://instagram.com/juanalcarazcine" target="_blank" class="f-link">INSTAGRAM</a>
+          <span class="sep">/</span>
+          <a href="mailto:hola@laoveja.es" class="f-link">HOLA@LAOVEJA.ES</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<style>
+  .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    padding: 3.5rem 5%;
+    transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .header.scrolled {
+    padding: 1.8rem 5%;
+    background: rgba(0,0,0,0.1);
+    backdrop-filter: blur(10px);
+  }
+
+  .header-inner {
+    max-width: 1800px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 1002; /* Stay above everything */
+  }
+
+  /* Logo Magic */
+  .logo-link {
+    text-decoration: none;
+    color: #ffffff;
+    display: block;
+    mix-blend-mode: difference;
+  }
+
+  .premium-logo {
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: 0.35em;
+    margin: 0;
+    line-height: 1;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0);
+    transition: all 0.6s ease;
+  }
+
+  .logo-link:hover .premium-logo {
+    letter-spacing: 0.45em;
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
+  }
+
+  .role {
+    font-family: var(--font-alt);
+    font-size: 0.6rem;
+    letter-spacing: 1.8em;
+    color: #ffffff;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin-top: 0.8rem;
+    display: block;
+    padding-left: 1.8em;
+    mix-blend-mode: difference;
+  }
+
+  /* Menu Toggle Button */
+  .menu-btn {
+    background: none;
+    border: none;
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    color: white;
+    position: relative;
+    mix-blend-mode: difference;
+  }
+
+  .btn-hover-bg {
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.05);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    z-index: -1;
+  }
+
+  .menu-btn:hover .btn-hover-bg {
+    transform: scaleX(1);
+  }
+
+  .menu-text {
+    font-family: var(--font-alt);
+    font-size: 0.7rem;
+    letter-spacing: 0.6em;
+    transition: opacity 0.4s ease;
+  }
+
+  .hamburger {
+    width: 40px;
+    height: 12px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .line {
+    width: 100%;
+    height: 1.5px;
+    background: white;
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  /* Full Screen Menu */
+  .full-menu {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    visibility: hidden;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .full-menu.open {
+    visibility: visible;
+    pointer-events: all;
+  }
+
+  .menu-background {
+    position: absolute;
+    inset: 0;
+    background: #000;
+    opacity: 0;
+    transition: opacity 1s ease;
+  }
+
+  .full-menu.open .menu-background {
+    opacity: 1;
+  }
+
+  .vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.9) 100%);
+  }
+
+  .noise {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3%3Ffilter id='n' %3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+  }
+
+  .menu-content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 5%;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .full-menu.open .menu-content {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.3s;
+  }
+
+  .nav-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .nav-item {
+    margin-bottom: 2rem;
+  }
+
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 3rem;
+    text-decoration: none;
+    color: rgba(255,255,255,0.2);
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .nav-index {
+    font-family: var(--font-alt);
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.15);
+  }
+
+  .nav-label {
+    display: block;
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 10vw, 9rem);
+    line-height: 1;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .nav-sub {
+    display: block;
+    font-family: var(--font-alt);
+    font-size: 0.8rem;
+    letter-spacing: 1em;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.6s ease;
+    margin-top: 0.5rem;
+  }
+
+  .nav-link:hover {
+    color: white;
+  }
+
+  .nav-link:hover .nav-label {
+    transform: scale(1.05);
+  }
+
+  .nav-link:hover .nav-sub {
+    opacity: 0.5;
+    transform: translateY(0);
+  }
+
+  .menu-footer {
+    margin-top: 8rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.8s ease;
+  }
+
+  .full-menu.open .menu-footer {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.8s;
+  }
+
+  .social-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .f-link {
+    font-family: var(--font-alt);
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .f-link:hover {
+    color: white;
+  }
+
+  .sep {
+    color: rgba(255,255,255,0.1);
+  }
+
+  /* Hamburger Active Animation */
+  .full-menu.open ~ .header-inner .l1 {
+    transform: translateY(5.5px) rotate(45deg);
+  }
+
+  .full-menu.open ~ .header-inner .l2 {
+    transform: translateY(-5px) rotate(-45deg);
+  }
+
+  @media (max-width: 768px) {
+    .header { padding: 2.5rem 5%; }
+    .nav-label { font-size: 3.5rem; }
+    .nav-link { gap: 1.5rem; }
+    .menu-text { display: none; }
+    .premium-logo { font-size: 1.8rem; }
+    .role { font-size: 0.5rem; }
+  }
+</style>
+
+<script>
+  function initMenu() {
+    const toggle = document.getElementById('menu-toggle');
+    const menu = document.getElementById('full-menu');
+    const navLinks = document.querySelectorAll('.nav-link');
+    let isOpen = false;
+
+    if (!toggle || !menu) return;
+
+    // Remove existing event listeners if any (though astro:page-load handles this usually)
+    toggle.replaceWith(toggle.cloneNode(true));
+    const newToggle = document.getElementById('menu-toggle');
+
+    function toggleMenu() {
+      isOpen = !isOpen;
+      menu?.classList.toggle('open');
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    }
+
+    newToggle?.addEventListener('click', toggleMenu);
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        if (isOpen) {
+          toggleMenu();
+        }
+      });
+    });
+  }
+
+  // Initialize on first load
+  initMenu();
+
+  // Re-initialize after navigation
+  document.addEventListener('astro:page-load', initMenu);
+</script>
+

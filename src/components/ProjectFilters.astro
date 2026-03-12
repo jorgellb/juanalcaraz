@@ -1,0 +1,119 @@
+---
+interface Props {
+  categories: string[];
+  activeCategory: string;
+}
+
+const { categories, activeCategory } = Astro.props;
+---
+
+<nav class="filters" aria-label="Filtrar proyectos">
+  <ul class="filters-list">
+    <li>
+      <button
+        class="filter-btn"
+        data-category="all"
+        aria-pressed={activeCategory === 'all'}
+      >
+        Todo
+      </button>
+    </li>
+    {categories.map((category) => (
+      <li>
+        <button
+          class="filter-btn"
+          data-category={category}
+          aria-pressed={activeCategory === category}
+        >
+          {category}
+        </button>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<style>
+  .filters {
+    margin-bottom: var(--spacing-2xl);
+  }
+  
+  .filters-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+  }
+  
+  .filter-btn {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+    color: var(--color-text-light);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--color-border);
+    border-radius: 2px;
+    background: transparent;
+    transition: all var(--transition-fast);
+  }
+  
+  .filter-btn:hover {
+    color: var(--color-text);
+    border-color: var(--color-text);
+  }
+  
+  .filter-btn.active,
+  .filter-btn[aria-pressed="true"] {
+    color: var(--color-bg);
+    background: var(--color-text);
+    border-color: var(--color-text);
+  }
+  
+  .filter-btn:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+</style>
+
+<script>
+  function initFilters() {
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const projectCards = document.querySelectorAll('.project-card');
+    
+    filterBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const category = btn.getAttribute('data-category');
+        if (!category) return;
+        
+        filterBtns.forEach((b) => {
+          b.classList.remove('active');
+          b.removeAttribute('aria-pressed');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-pressed', 'true');
+        
+        projectCards.forEach((card) => {
+          const cardElement = card as HTMLElement;
+          const cardCategory = cardElement.dataset.category;
+          const parentItem = card.closest('.project-item') as HTMLElement;
+          
+          if (category === 'all' || cardCategory === category) {
+            parentItem.style.display = '';
+            parentItem.style.opacity = '0';
+            parentItem.style.transform = 'translateY(10px)';
+            
+            requestAnimationFrame(() => {
+              parentItem.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+              parentItem.style.opacity = '1';
+              parentItem.style.transform = 'translateY(0)';
+            });
+          } else {
+            parentItem.style.display = 'none';
+          }
+        });
+      });
+    });
+  }
+  
+  document.addEventListener('astro:page-load', initFilters);
+  document.addEventListener('DOMContentLoaded', initFilters);
+</script>

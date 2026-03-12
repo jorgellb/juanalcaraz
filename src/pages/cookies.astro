@@ -1,0 +1,66 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const pageTitle = 'Cookies - La Oveja';
+---
+
+<Layout title={pageTitle}>
+  <section class="legal-page section">
+    <div class="container">
+      <h1 class="page-title">Politica de Cookies</h1>
+      <div class="legal-content">
+        <p class="update-date">Ultima actualizacion: febrero 2026</p>
+        
+        <h2>1. Que son las cookies?</h2>
+        <p>Las cookies son pequenos archivos de texto que los sitios web almacenan en tu dispositivo para mejorar la experiencia de navegacion.</p>
+        
+        <h2>2. Cookies utilizadas</h2>
+        <p>Este sitio web utiliza unicamente cookies tecnicas esenciales para su funcionamiento correcto. No utilizamos cookies de analisis, publicidad ni seguimiento.</p>
+        
+        <h2>3. Control de cookies</h2>
+        <p>Puedes configurar tu navegador para bloquear, eliminar o advertirte sobre las cookies. Consulta la documentacion de tu navegador para mas informacion.</p>
+        
+        <h2>4. Vimeo</h2>
+        <p>Los videos de Vimeo incrustados en este sitio web pueden utilizar sus propias cookies para guardar preferencias y estadisticas de reproduccion. Consulta la politica de Vimeo para mas informacion.</p>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .legal-page {
+    padding-top: var(--spacing-3xl);
+  }
+  
+  .page-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 6vw, 4rem);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+    letter-spacing: var(--letter-spacing-tight);
+    margin-bottom: var(--spacing-2xl);
+  }
+  
+  .legal-content {
+    max-width: var(--max-width-md);
+  }
+  
+  .update-date {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-light);
+    margin-bottom: var(--spacing-2xl);
+  }
+  
+  .legal-content h2 {
+    font-family: var(--font-display);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-medium);
+    margin-top: var(--spacing-2xl);
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .legal-content p {
+    color: var(--color-text-light);
+    line-height: var(--line-height-relaxed);
+  }
+</style>

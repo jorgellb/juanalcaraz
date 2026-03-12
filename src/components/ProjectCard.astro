@@ -1,0 +1,258 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  featured?: boolean;
+}
+
+const { project, featured = false } = Astro.props;
+const { title, category, videoUrl, thumbnail, year } = project.data;
+
+const getThumbUrl = (url: string) => {
+  if (thumbnail) return thumbnail;
+  
+  if (url.includes('vimeo')) {
+    const id = url.split('/').filter(Boolean).pop();
+    return `https://vumbnail.com/${id}.jpg`;
+  }
+  
+  if (url.includes('youtube') || url.includes('youtu.be')) {
+    let id = '';
+    if (url.includes('v=')) {
+      const splitV = url.split('v=')[1];
+      id = splitV ? (splitV.split('&')[0] || '') : '';
+    } else {
+      id = url.split('/').filter(Boolean).pop() || '';
+    }
+    return `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
+  }
+  
+  return 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=1200';
+};
+
+const thumbUrl = getThumbUrl(videoUrl);
+---
+
+<article 
+  class:list={['project-card', { featured }]} 
+  data-category={category}
+  data-video-url={videoUrl}
+  data-project-title={title}
+>
+  <button class="project-trigger" aria-label={`Ver proyecto ${title}`}>
+    <div class="thumbnail">
+      <img 
+        src={thumbUrl} 
+        alt={title} 
+        loading="lazy" 
+        decoding="async" 
+        onerror="this.src='https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=1200'"
+      />
+      <div class="overlay">
+        <div class="overlay-content">
+          <div class="meta-top">
+            <span class="category">{category}</span>
+            <span class="year">{year}</span>
+          </div>
+          <h3 class="title">{title}</h3>
+          <div class="play-indicator">
+            <span class="play-text">PLAY PROJECT</span>
+            <div class="play-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-glow"></div>
+    </div>
+  </button>
+</article>
+
+<style>
+  .project-card {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    height: 100%; /* Allow container to define height */
+  }
+
+  .project-card.featured {
+    /* Potential featured specific tweaks */
+  }
+
+  .project-trigger {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    text-align: left;
+    display: block;
+  }
+
+  .thumbnail {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 250px;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #080808;
+    clip-path: polygon(0 0, 100% 0, 100% 90%, 92% 100%, 0 100%);
+    transition: clip-path 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Reset aspect ratio if parent defines height */
+  .project-card:not(.featured) .thumbnail {
+    aspect-ratio: 16 / 9;
+  }
+
+  .project-card.featured .thumbnail {
+    aspect-ratio: unset;
+    height: 100%;
+  }
+
+  .project-card:hover .thumbnail {
+    clip-path: polygon(0 0, 100% 0, 100% 95%, 95% 100%, 0 100%);
+  }
+
+  .thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1), filter 1s ease;
+    filter: grayscale(0.4) brightness(0.6);
+  }
+
+  .project-card:hover .thumbnail img {
+    transform: scale(1.08);
+    filter: grayscale(0) brightness(1);
+  }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, transparent 60%);
+    display: flex;
+    align-items: flex-end;
+    padding: 2.5rem;
+    opacity: 0.8;
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 2;
+  }
+
+  .project-card:hover .overlay {
+    opacity: 1;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.4) 100%);
+    backdrop-filter: blur(5px);
+  }
+
+  .overlay-content {
+    width: 100%;
+    transform: translateY(10px);
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .project-card:hover .overlay-content {
+    transform: translateY(0);
+  }
+
+  .meta-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.8rem;
+  }
+
+  .category {
+    font-family: var(--font-alt);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5em;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .year {
+    font-family: var(--font-alt);
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.2);
+    letter-spacing: 0.2em;
+  }
+
+  .title {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    color: white;
+    line-height: 1.1;
+    letter-spacing: 0.05em;
+  }
+
+  .play-indicator {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.6s ease;
+  }
+
+  .project-card:hover .play-indicator {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .play-text {
+    font-family: var(--font-alt);
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: #fff;
+    border-bottom: 1px solid rgba(255,255,255,0.3);
+    padding-bottom: 3px;
+  }
+
+  .play-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    color: black;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+  }
+
+  .play-indicator:hover .play-icon {
+    transform: scale(1.1);
+  }
+
+  .card-glow {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.8s ease;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .project-card:hover .card-glow {
+    left: 150%;
+  }
+
+  @media (max-width: 768px) {
+    .thumbnail { min-height: 200px; }
+    .title { font-size: 1.4rem; }
+    .overlay { padding: 1.5rem; }
+  }
+</style>
+
