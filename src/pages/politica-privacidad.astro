@@ -1,0 +1,77 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const pageTitle = 'Política de Privacidad - Juan Alcazar';
+---
+
+<Layout title={pageTitle}>
+  <section class="legal-page section-padding">
+    <div class="container narrow">
+      <div class="legal-header">
+        <h1 class="legal-title magic-reveal">POLÍTICA DE PRIVACIDAD</h1>
+        <div class="legal-line magic-reveal" style="transition-delay: 0.2s"></div>
+      </div>
+      
+      <div class="legal-content magic-reveal" style="transition-delay: 0.4s">
+        <h2>1. Información al usuario</h2>
+        <p>Juan Alcaraz es el Responsable del tratamiento de los datos personales del Usuario y le informa que estos datos serán tratados de conformidad con lo dispuesto en el Reglamento (UE) 2016/679 de 27 de abril de 2016 (GDPR) y la Ley Orgánica 3/2018 de 5 de diciembre (LOPDGDD).</p>
+        
+        <h2>2. Finalidad del tratamiento</h2>
+        <p>Mantenimiento de una relación colaborativa o comercial, y el envío de comunicaciones sobre nuestros servicios audiovisuales. Los datos se conservarán mientras exista un interés mutuo para mantener el fin del tratamiento.</p>
+        
+        <h2>3. Toma de contacto</h2>
+        <p>Los datos que nos facilite a través del formulario de contacto se utilizarán exclusivamente para responder a sus consultas, solicitudes o evaluar propuestas de proyectos, aplicando la confidencialidad necesaria en el ámbito audiovisual.</p>
+
+        <h2>4. Derechos de los usuarios</h2>
+        <p>Usted puede ejercer en todo momento sus derechos de acceso, rectificación, portabilidad, supresión y limitación al correo: hola@laoveja.es.</p>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .legal-page {
+    padding: 12rem 0;
+    background: #000;
+    min-height: 100vh;
+  }
+  
+  .legal-header {
+    margin-bottom: 5rem;
+  }
+
+  .legal-title {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 8vw, 6rem);
+    line-height: 1;
+    margin: 0;
+  }
+
+  .legal-line {
+    width: 60px;
+    height: 1px;
+    background: white;
+    margin-top: 2rem;
+    opacity: 0.3;
+  }
+
+  .legal-content {
+    font-family: var(--font-main);
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.8;
+  }
+
+  .legal-content h2 {
+    font-family: var(--font-alt);
+    font-size: 0.9rem;
+    letter-spacing: 0.2em;
+    color: #fff;
+    margin: 3rem 0 1rem;
+    text-transform: uppercase;
+  }
+
+  .legal-content p {
+    margin-bottom: 1.5rem;
+    font-weight: 300;
+  }
+</style>

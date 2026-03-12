@@ -6,7 +6,8 @@ import { getCollection } from 'astro:content';
 const allProjects = await getCollection('projects');
 const sortedProjects = allProjects.sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
 
-const categories = ['Todo', ...new Set(allProjects.map((p) => p.data.category))].filter(Boolean).sort();
+const uniqueCategories = [...new Set(allProjects.map((p) => p.data.category))].filter(Boolean).sort();
+const categories = ['TODOS', ...uniqueCategories];
 
 const pageTitle = 'Proyectos - Juan Alcazar';
 const pageDescription = 'Filmografía completa y proyectos audiovisuales de Juan Alcazar.';
@@ -28,13 +29,29 @@ const pageDescription = 'Filmografía completa y proyectos audiovisuales de Juan
         <div class="filter-bar">
           {categories.map((cat, index) => (
             <button 
-              class:list={['filter-btn', { active: cat === 'Todo' }]} 
-              data-category={cat === 'Todo' ? 'all' : cat}
+              class:list={['filter-btn', { active: cat === 'TODOS' }]} 
+              data-category={cat === 'TODOS' ? 'all' : cat}
             >
               <span class="btn-num">0{index}</span>
               <span class="btn-label">{cat}</span>
             </button>
           ))}
+        </div>
+        
+        <div class="mobile-filter">
+          <label for="category-select" class="sr-only">Filtrar por categoría</label>
+          <div class="select-wrapper">
+            <select id="category-select" class="custom-select">
+              {categories.map((cat) => (
+                <option value={cat === 'TODOS' ? 'all' : cat}>{cat}</option>
+              ))}
+            </select>
+            <div class="select-icon">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -89,9 +106,9 @@ const pageDescription = 'Filmografía completa y proyectos audiovisuales de Juan
   .filter-bar {
     display: flex;
     flex-wrap: wrap;
-    gap: 4rem;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    padding-bottom: 2rem;
+    gap: 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 1rem;
   }
 
   .filter-btn {
@@ -100,9 +117,9 @@ const pageDescription = 'Filmografía completa y proyectos audiovisuales de Juan
     color: rgba(255,255,255,0.3);
     cursor: pointer;
     display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    padding: 1rem 0;
+    align-items: baseline;
+    gap: 0.6rem;
+    padding: 0.5rem 0;
     transition: color 0.4s ease;
     position: relative;
   }
@@ -118,6 +135,10 @@ const pageDescription = 'Filmografía completa y proyectos audiovisuales de Juan
     transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
+  .filter-btn:hover {
+    color: rgba(255,255,255,0.6);
+  }
+
   .filter-btn.active {
     color: #fff;
   }
@@ -128,16 +149,60 @@ const pageDescription = 'Filmografía completa y proyectos audiovisuales de Juan
 
   .btn-num {
     font-family: var(--font-alt);
-    font-size: 0.6rem;
-    opacity: 0.5;
-    margin-top: 0.2rem;
+    font-size: 0.5rem;
+    opacity: 0.3;
+    letter-spacing: 0.1em;
   }
 
   .btn-label {
-    font-family: var(--font-alt);
-    font-size: 0.8rem;
-    letter-spacing: 0.3em;
+    font-family: var(--font-main);
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
     text-transform: uppercase;
+    font-weight: 300;
+  }
+
+  /* Mobile Filter */
+  .mobile-filter {
+    display: none;
+    width: 100%;
+    margin-bottom: 2rem;
+  }
+
+  .select-wrapper {
+    position: relative;
+    width: 100%;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+  }
+
+  .custom-select {
+    width: 100%;
+    background: transparent;
+    color: white;
+    font-family: var(--font-main);
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 1rem 2rem 1rem 0;
+    border: none;
+    appearance: none;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .custom-select option {
+    background: #0a0a0a;
+    color: white;
+    padding: 1rem;
+  }
+
+  .select-icon {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: rgba(255,255,255,0.5);
   }
 
   /* Grid */
@@ -182,8 +247,10 @@ const pageDescription = 'Filmografía completa y proyectos audiovisuales de Juan
   @media (max-width: 768px) {
     .projects-hero { padding-top: 10rem; }
     .hero-title { font-size: 4rem; }
-    .filter-bar { gap: 2rem; }
     .projects-grid { grid-template-columns: 1fr; }
+    
+    .filter-bar { display: none; }
+    .mobile-filter { display: block; }
   }
 </style>
 
@@ -193,40 +260,63 @@ const pageDescription = 'Filmografía completa y proyectos audiovisuales de Juan
     const items = document.querySelectorAll('.grid-item');
     const grid = document.getElementById('projects-grid');
     const noResults = document.getElementById('no-results');
+    const select = document.getElementById('category-select') as HTMLSelectElement;
+
+    function applyFilter(filter: string) {
+      let visibleCount = 0;
+
+      // Filtering
+      items.forEach(item => {
+        const cat = item.getAttribute('data-category');
+        if (filter === 'all' || cat === filter) {
+          item.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+
+      // Toggle Grid/No-Results
+      if (visibleCount === 0) {
+        if (grid) grid.style.display = 'none';
+        if (noResults) noResults.style.display = 'block';
+      } else {
+        if (grid) grid.style.display = 'grid';
+        if (noResults) noResults.style.display = 'none';
+      }
+
+      // Trigger reveal animations
+      window.dispatchEvent(new Event('scroll'));
+    }
 
     btns.forEach(btn => {
       btn.addEventListener('click', () => {
         // Active state
         btns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-
+        
         const filter = btn.getAttribute('data-category');
-        let visibleCount = 0;
-
-        // Filtering
-        items.forEach(item => {
-          const cat = item.getAttribute('data-category');
-          if (filter === 'all' || cat === filter) {
-            item.classList.remove('hidden');
-            visibleCount++;
-          } else {
-            item.classList.add('hidden');
-          }
-        });
-
-        // Toggle Grid/No-Results
-        if (visibleCount === 0) {
-          if (grid) grid.style.display = 'none';
-          if (noResults) noResults.style.display = 'block';
-        } else {
-          if (grid) grid.style.display = 'grid';
-          if (noResults) noResults.style.display = 'none';
-        }
-
-        // Trigger reveal animations
-        window.dispatchEvent(new Event('scroll'));
+        if(select) select.value = filter || 'all';
+        applyFilter(filter || 'all');
       });
     });
+
+    if (select) {
+      select.addEventListener('change', (e) => {
+        const filter = (e.target as HTMLSelectElement).value;
+        
+        // Sync desktop buttons
+        btns.forEach(b => {
+          if (b.getAttribute('data-category') === filter) {
+            b.classList.add('active');
+          } else {
+            b.classList.remove('active');
+          }
+        });
+        
+        applyFilter(filter);
+      });
+    }
   }
 
   document.addEventListener('astro:page-load', initFilters);

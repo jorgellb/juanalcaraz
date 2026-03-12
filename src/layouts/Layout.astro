@@ -4,6 +4,7 @@ import type { CollectionEntry } from 'astro:content';
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import VideoModal from '../components/VideoModal.astro';
+import CookieBanner from '../components/CookieBanner.astro';
 
 interface Props {
   title: string;
@@ -15,7 +16,7 @@ interface Props {
 
 const {
   title,
-  description = 'Juan Alcazar - Cineasta',
+  description = 'Juan Alcaraz - Cineasta murciano. Director de videoclips, cortometrajes, spots y proyectos audiovisuales.',
   image = '/og-default.jpg',
   type = 'website'
 } = Astro.props;
@@ -25,8 +26,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Person',
-  name: 'Juan Alcazar',
-  url: 'https://laoveja.es',
+  name: 'Juan Alcaraz',
+  url: 'https://juanalcaraz.es',
   jobTitle: 'Cineasta',
   sameAs: [
     'https://vimeo.com/juanalcaraz',
@@ -67,11 +68,11 @@ const jsonLd = {
       <script is:inline type="application/ld+json" set:html={JSON.stringify({
         '@context': 'https://schema.org',
         '@type': 'WebSite',
-        name: 'Juan Alcazar',
-        url: 'https://laoveja.es',
+        name: 'Juan Alcaraz | Cineasta',
+        url: 'https://juanalcaraz.es',
         potentialAction: {
           '@type': 'SearchAction',
-          target: 'https://laoveja.es/proyectos?q={search_term_string}',
+          target: 'https://juanalcaraz.es/proyectos?q={search_term_string}',
           'query-input': 'required name=search_term_string'
         }
       })} />
@@ -101,6 +102,7 @@ const jsonLd = {
     </main>
 
     <VideoModal />
+    <CookieBanner />
     
     <style is:global>
       @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600&family=Manrope:wght@200;400;700&family=Playfair+Display:ital@1&display=swap');

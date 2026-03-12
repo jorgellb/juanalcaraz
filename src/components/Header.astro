@@ -58,6 +58,13 @@ const navItems = [
           <span class="sep">/</span>
           <a href="mailto:hola@laoveja.es" class="f-link">HOLA@LAOVEJA.ES</a>
         </div>
+        <div class="legal-row">
+          <a href="/aviso-legal" class="l-link">AVISO LEGAL</a>
+          <span class="sep">·</span>
+          <a href="/politica-privacidad" class="l-link">POLÍTICA PRIVACIDAD</a>
+          <span class="sep">·</span>
+          <a href="/politica-cookies" class="l-link">POLÍTICA COOKIES</a>
+        </div>
       </div>
     </div>
   </nav>
@@ -330,6 +337,27 @@ const navItems = [
     color: white;
   }
 
+  .legal-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .l-link {
+    font-family: var(--font-alt);
+    font-size: 0.5rem;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.2);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .l-link:hover {
+    color: rgba(255,255,255,0.6);
+  }
+
   .sep {
     color: rgba(255,255,255,0.1);
   }
@@ -345,11 +373,71 @@ const navItems = [
 
   @media (max-width: 768px) {
     .header { padding: 2.5rem 5%; }
-    .nav-label { font-size: 3.5rem; }
-    .nav-link { gap: 1.5rem; }
+    
+    .full-menu {
+      align-items: flex-start;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .menu-background {
+      position: fixed;
+    }
+
+    .menu-content {
+      padding-top: 10rem;
+      padding-bottom: 5rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    .nav-index { 
+      display: none; 
+    }
+    
+    .nav-link { 
+      gap: 0; 
+      justify-content: center;
+      width: 100%;
+    }
+
+    .nav-text-container {
+      width: 100%;
+      text-align: center;
+    }
+
+    .nav-label { 
+      font-size: 2.2rem; 
+      letter-spacing: 0.1em;
+    }
+    
+    .nav-sub { 
+      font-size: 0.6rem; 
+      letter-spacing: 0.5em; 
+      margin-top: 0.4rem; 
+      opacity: 0.4;
+      transform: translateY(0);
+    }
+    
+    .nav-item { margin-bottom: 2rem; }
+    
     .menu-text { display: none; }
-    .premium-logo { font-size: 1.8rem; }
+    .premium-logo { font-size: 1.6rem; }
     .role { font-size: 0.5rem; }
+    
+    .menu-footer { margin-top: 2rem; }
+    
+    .social-row, .legal-row {
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+    
+    .social-row .sep, .legal-row .sep {
+      display: none;
+    }
   }
 </style>
 

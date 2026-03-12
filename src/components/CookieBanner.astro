@@ -1,0 +1,155 @@
+---
+---
+
+<div id="cookie-banner" class="cookie-banner hidden">
+  <div class="cookie-content">
+    <div class="cookie-text">
+      <h3 class="cookie-title">USO DE COOKIES</h3>
+      <p class="cookie-p">Utilizamos cookies propias y de terceros para mejorar la experiencia cinematográfica y ofrecer contenidos visuales integrados. <a href="/politica-cookies" class="cookie-link">Saber más</a>.</p>
+    </div>
+    <div class="cookie-actions">
+      <button id="btn-reject" class="cookie-btn cookie-reject">RECHAZAR</button>
+      <button id="btn-accept" class="cookie-btn cookie-accept">ACEPTAR</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .cookie-banner {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    z-index: 9999;
+    width: calc(100% - 4rem);
+    max-width: 450px;
+    background: rgba(10, 10, 10, 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    transform: translateY(150%);
+    opacity: 0;
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .cookie-banner:not(.hidden) {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .cookie-content {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .cookie-title {
+    font-family: var(--font-alt);
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    color: #fff;
+    margin-bottom: 0.8rem;
+    margin-top: 0;
+  }
+
+  .cookie-p {
+    font-family: var(--font-main);
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .cookie-link {
+    color: #fff;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-color: rgba(255, 255, 255, 0.3);
+    transition: text-decoration-color 0.3s ease;
+  }
+  
+  .cookie-link:hover {
+    text-decoration-color: #fff;
+  }
+
+  .cookie-actions {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .cookie-btn {
+    flex: 1;
+    font-family: var(--font-alt);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    padding: 0.8rem 0;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.4s ease;
+    background: none;
+  }
+
+  .cookie-reject {
+    color: rgba(255, 255, 255, 0.4);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .cookie-reject:hover {
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .cookie-accept {
+    background: #fff;
+    color: #000;
+  }
+
+  .cookie-accept:hover {
+    background: transparent;
+    color: #fff;
+    border-color: #fff;
+  }
+
+  @media (max-width: 768px) {
+    .cookie-banner {
+      bottom: 1rem;
+      left: 1rem;
+      width: calc(100% - 2rem);
+    }
+    .cookie-content {
+      padding: 1.5rem;
+    }
+  }
+</style>
+
+<script>
+  function initCookieBanner() {
+    const banner = document.getElementById('cookie-banner');
+    const btnAccept = document.getElementById('btn-accept');
+    const btnReject = document.getElementById('btn-reject');
+
+    if (!banner) return;
+
+    // Simulate delay for cinematic entrance if not accepted
+    const cookieConsent = localStorage.getItem('cookieConsent');
+    
+    if (!cookieConsent) {
+      setTimeout(() => {
+        banner.classList.remove('hidden');
+      }, 2000); // 2 seconds after load
+    }
+
+    function closeBanner(status: string) {
+      localStorage.setItem('cookieConsent', status);
+      banner?.classList.add('hidden');
+    }
+
+    btnAccept?.addEventListener('click', () => closeBanner('accepted'));
+    btnReject?.addEventListener('click', () => closeBanner('rejected'));
+  }
+
+  document.addEventListener('astro:page-load', initCookieBanner);
+  initCookieBanner();
+</script>
