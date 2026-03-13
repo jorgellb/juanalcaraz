@@ -56,7 +56,7 @@ const navItems = [
           <span class="sep">/</span>
           <a href="https://instagram.com/juanalcarazcine" target="_blank" class="f-link">INSTAGRAM</a>
           <span class="sep">/</span>
-          <a href="mailto:hola@laoveja.es" class="f-link">HOLA@LAOVEJA.ES</a>
+          <a href="mailto:hola@juanalcaraz.es" class="f-link">HOLA@JUANALCARAZ.ES</a>
         </div>
         <div class="legal-row">
           <a href="/aviso-legal" class="l-link">AVISO LEGAL</a>
@@ -252,7 +252,7 @@ const navItems = [
   }
 
   .nav-item {
-    margin-bottom: 2rem;
+    margin-bottom: 1.2rem;
   }
 
   .nav-link {
@@ -274,21 +274,21 @@ const navItems = [
   .nav-label {
     display: block;
     font-family: var(--font-display);
-    font-size: clamp(3rem, 10vw, 9rem);
-    line-height: 1;
-    letter-spacing: 0.05em;
+    font-size: clamp(2rem, 6vw, 5rem);
+    line-height: 1.1;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
   }
 
   .nav-sub {
     display: block;
     font-family: var(--font-alt);
-    font-size: 0.8rem;
-    letter-spacing: 1em;
+    font-size: 0.65rem;
+    letter-spacing: 0.6em;
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px);
     transition: all 0.6s ease;
-    margin-top: 0.5rem;
+    margin-top: 0.3rem;
   }
 
   .nav-link:hover {
@@ -305,7 +305,7 @@ const navItems = [
   }
 
   .menu-footer {
-    margin-top: 8rem;
+    margin-top: 5rem;
     opacity: 0;
     transform: translateY(20px);
     transition: all 0.8s ease;
@@ -369,6 +369,26 @@ const navItems = [
 
   .full-menu.open ~ .header-inner .l2 {
     transform: translateY(-5px) rotate(-45deg);
+  }
+
+  /* Ajustes para laptops de 15" (resoluciones entre 1024px y 1600px) */
+  @media (max-width: 1600px) and (min-width: 1024px) {
+    .nav-label {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+    }
+    
+    .nav-item {
+      margin-bottom: 1rem;
+    }
+    
+    .menu-footer {
+      margin-top: 3rem;
+    }
+    
+    .nav-sub {
+      font-size: 0.6rem;
+      letter-spacing: 0.5em;
+    }
   }
 
   @media (max-width: 768px) {
