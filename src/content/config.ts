@@ -4,7 +4,7 @@ const projectsCollection = defineCollection({
   type: 'data',
   schema: z.object({
     title: z.string(),
-    category: z.string(), // Changed to string for flexibility with Uppercase and 'OTRAS'
+    category: z.string(),
     year: z.number(),
     videoUrl: z.string().url(),
     order: z.number(),
@@ -24,7 +24,20 @@ const bioCollection = defineCollection({
   })
 });
 
+const filmographyCollection = defineCollection({
+  type: 'data',
+  schema: z.object({
+    year: z.number(),
+    items: z.array(z.object({
+      title: z.string(),
+      category: z.string(),
+      roles: z.string()
+    }))
+  })
+});
+
 export const collections = {
   projects: projectsCollection,
-  bio: bioCollection
+  bio: bioCollection,
+  filmography: filmographyCollection
 };

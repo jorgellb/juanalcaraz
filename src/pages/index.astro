@@ -1,34 +1,21 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import ProjectCard from '../components/ProjectCard.astro';
-import { getCollection } from 'astro:content';
-
-const allProjects = await getCollection('projects');
-const featuredProjects = allProjects
-  .filter(p => p.data.featured !== false)
-  .sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
 ---
 
-<Layout title="Juan Alcazar - Cineasta">
+<Layout 
+  title="Juan Alcaraz | Cineasta y Director Audiovisual" 
+  description="Portfolio oficial de Juan Alcaraz, director de cine, cortometrajes, spots y vídeos creativos en Murcia."
+>
   <section class="hero">
     <div class="video-background">
       <iframe
-        src="https://player.vimeo.com/video/661948740?background=1&autoplay=1&playsinline=1&color&autopause=0&loop=1&muted=1&title=0&portrait=0&byline=0"
+        src="https://player.vimeo.com/video/1175433396?background=1&autoplay=1&playsinline=1&color&autopause=0&loop=1&muted=1&title=0&portrait=0&byline=0"
         allow="autoplay; fullscreen"
         allowfullscreen
       ></iframe>
     </div>
   </section>
 
-  <section class="projects-section" id="projects">
-    <div class="projects-grid">
-      {featuredProjects.map((project, index) => (
-        <div class="magic-reveal" style={`transition-delay: ${index * 0.1}s`}>
-          <ProjectCard project={project} featured={true} />
-        </div>
-      ))}
-    </div>
-  </section>
 
 </Layout>
 
@@ -59,40 +46,9 @@ const featuredProjects = allProjects
     border: none;
   }
 
-  .projects-section {
-    background-color: #000;
-    position: relative;
-    width: 100vw;
-    margin-left: calc(50% - 50vw);
-  }
-
-  .projects-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0;
-    width: 100%;
-  }
-
-  .projects-grid > div {
-    height: 60vh;
-  }
-
-  @media (max-width: 1024px) {
-    .projects-grid > div {
-      height: 50vh;
-    }
-  }
-
   @media (max-width: 768px) {
     .video-background {
       transform: translate(-50%, -50%) scale(1.5);
-    }
-    
-    .projects-grid {
-      grid-template-columns: 1fr;
-    }
-    .projects-grid > div {
-      height: 60vh;
     }
   }
 </style>

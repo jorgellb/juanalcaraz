@@ -2,14 +2,14 @@
 import Layout from '../layouts/Layout.astro';
 
 const pageTitle = 'Contacto - Juan Alcaraz | Cineasta';
-const pageDescription = 'Alguien tenía que hacerlo y tenía que ser un murciano. Escríbeme para nuevos proyectos. +34 663 384 218 · hola@juanalcaraz.es';
+const pageDescription = 'Contacta con Juan Alcaraz, cineasta y director para nuevos proyectos audiovisuales. Telf: +34 663 384 218 | Email: juanalcarazcine@gmail.com';
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
   <section class="contact-hero">
     <div class="hero-bg">
-      <div class="vignette"></div>
-      <div class="noise"></div>
+      <div class="hero-overlay"></div>
+      <div class="hero-flare"></div>
     </div>
     <div class="container hero-container">
       <div class="hero-content">
@@ -21,76 +21,23 @@ const pageDescription = 'Alguien tenía que hacerlo y tenía que ser un murciano
   </section>
 
   <section class="contact-section">
-    <div class="container narrow">
-      <div class="contact-grid">
-        <div class="form-container">
-          <h2 class="section-label magic-reveal">ENVÍA UN MENSAJE</h2>
-          <form
-            class="contact-form"
-            name="contact"
-            method="POST"
-            data-netlify="true"
-            netlify-honeypot="bot-field"
-          >
-            <input type="hidden" name="form-name" value="contact" />
-            
-            <div class="form-row magic-reveal" style="transition-delay: 0.5s">
-              <div class="form-group">
-                <label for="name">NOMBRE</label>
-                <input type="text" id="name" name="name" placeholder="Tu nombre..." required />
-              </div>
-              <div class="form-group">
-                <label for="email">EMAIL</label>
-                <input type="email" id="email" name="email" placeholder="tu@email.com" required />
-              </div>
-            </div>
-
-            <div class="form-group magic-reveal" style="transition-delay: 0.6s">
-              <label for="subject">ASUNTO</label>
-              <div class="select-wrapper">
-                <select id="subject" name="subject" required>
-                  <option value="" disabled selected>Selecciona un motivo</option>
-                  <option value="colaboracion">Colaboración Cinematográfica</option>
-                  <option value="presupuesto">Presupuesto de Proyecto</option>
-                  <option value="consulta">Consulta de Prensa</option>
-                  <option value="otro">Otro</option>
-                </select>
-                <span class="select-arrow"></span>
-              </div>
-            </div>
-
-            <div class="form-group magic-reveal" style="transition-delay: 0.7s">
-              <label for="message">MENSAJE</label>
-              <textarea id="message" name="message" rows="5" placeholder="Cuéntame sobre tu visión..." required></textarea>
-            </div>
-
-            <button type="submit" class="submit-btn magic-reveal" style="transition-delay: 0.8s">
-              <span class="btn-text">ENVIAR PROPUESTA</span>
-              <div class="btn-glow"></div>
-            </button>
-          </form>
-        </div>
-
+    <div class="container">
+      <div class="contact-center-wrap">
         <div class="info-container">
-          <blockquote class="contact-quote magic-reveal" style="transition-delay: 0.8s">
-            «Alguien tenía que hacerlo y tenía que ser un murciano»
-          </blockquote>
-
-          <div class="info-block magic-reveal" style="transition-delay: 0.9s">
+          <div class="info-block magic-reveal" style="transition-delay: 0.6s">
             <h3 class="info-label">EMAIL DIRECTO</h3>
-            <a href="mailto:hola@juanalcaraz.es" class="info-link">hola@juanalcaraz.es</a>
+            <a href="mailto:juanalcarazcine@gmail.com" class="info-link">JUANALCARAZCINE@GMAIL.COM</a>
           </div>
           
-          <div class="info-block magic-reveal" style="transition-delay: 1s">
+          <div class="info-block magic-reveal" style="transition-delay: 0.8s">
             <h3 class="info-label">TELÉFONO</h3>
             <a href="tel:+34663384218" class="info-link">+34 663 384 218</a>
           </div>
 
-          <div class="info-block magic-reveal" style="transition-delay: 1.1s">
+          <div class="info-block magic-reveal" style="transition-delay: 1s">
             <h3 class="info-label">SOCIAL</h3>
             <div class="social-links">
-              <a href="https://vimeo.com/juanalcaraz" target="_blank">VIMEO</a>
-              <a href="https://instagram.com/juanalcarazcine" target="_blank">INSTAGRAM</a>
+              <a href="https://instagram.com/juanalcarazcine" target="_blank" class="info-link">INSTAGRAM</a>
             </div>
           </div>
         </div>
@@ -101,7 +48,7 @@ const pageDescription = 'Alguien tenía que hacerlo y tenía que ser un murciano
 
 <style>
   .contact-hero {
-    height: 60vh;
+    height: 70vh;
     position: relative;
     display: flex;
     align-items: center;
@@ -112,22 +59,20 @@ const pageDescription = 'Alguien tenía que hacerlo y tenía que ser un murciano
   .hero-bg {
     position: absolute;
     inset: 0;
-    background: url('https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&q=80&w=2000') no-repeat center/cover;
-    opacity: 0.3;
+    background: url('/contacto.jpg') no-repeat center/cover;
+    opacity: 0.5;
+    transform: scale(1.05);
   }
 
-  .vignette {
+  .hero-overlay {
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,1) 100%);
-  }
-
-  .noise {
-    position: absolute;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3%3Ffilter id='n' %3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    opacity: 0.05;
-    mix-blend-mode: overlay;
+    background: linear-gradient(to bottom, 
+      rgba(0,0,0,0.8) 0%, 
+      transparent 40%, 
+      transparent 60%, 
+      rgba(0,0,0,1) 100%
+    );
   }
 
   .hero-container {
@@ -147,13 +92,13 @@ const pageDescription = 'Alguien tenía que hacerlo y tenía que ser un murciano
   .hero-title {
     font-family: var(--font-display);
     font-size: clamp(4rem, 15vw, 10rem);
-    line-height:1;
+    line-height: 1;
     margin: 0;
     letter-spacing: 0.1em;
   }
 
   .hero-line {
-    width: 100px;
+    width: 60px;
     height: 1px;
     background: white;
     margin-top: 4rem;
@@ -162,236 +107,83 @@ const pageDescription = 'Alguien tenía que hacerlo y tenía que ser un murciano
 
   /* Contact Section */
   .contact-section {
-    padding: 10rem 0;
+    padding: 12rem 0;
     background: #000;
   }
 
-  .contact-grid {
-    display: grid;
-    grid-template-columns: 1.5fr 1fr;
-    gap: 10rem;
-  }
-
-  .section-label {
-    font-family: var(--font-alt);
-    font-size: 0.7rem;
-    letter-spacing: 0.5em;
-    color: rgba(255,255,255,0.3);
-    margin-bottom: 5rem;
-  }
-
-  .contact-form {
-    display: flex;
-    flex-direction: column;
-    gap: 4rem;
-    color-scheme: dark; /* Force dark UI elements */
-  }
-
-  .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
-  }
-
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 1.2rem;
-  }
-
-  .form-group label {
-    font-family: var(--font-alt);
-    font-size: 0.65rem;
-    letter-spacing: 0.3em;
-    color: rgba(255,255,255,0.4);
-  }
-
-  .form-group input, 
-  .form-group textarea,
-  .form-group select {
-    background: rgba(255,255,255,0.03); /* Slight solid base */
-    border: none;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    padding: 1.2rem 1rem;
-    color: #fff;
-    font-family: var(--font-main);
-    font-size: 1rem;
-    transition: all 0.4s ease;
-    border-radius: 0;
+  .contact-center-wrap {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
     width: 100%;
   }
 
-  .form-group input::placeholder, 
-  .form-group textarea::placeholder {
-    color: rgba(255,255,255,0.15);
-  }
-
-  .form-group input:focus, 
-  .form-group textarea:focus,
-  .form-group select:focus {
-    outline: none;
-    background: rgba(255,255,255,0.07);
-    border-bottom-color: #fff;
-  }
-
-  /* Select Fix */
-  .select-wrapper {
-    position: relative;
-    width: 100%;
-  }
-
-  .form-group select {
-    appearance: none;
-    cursor: pointer;
-    padding-right: 3rem;
-    color-scheme: dark;
-  }
-
-  /* Dropdown Options Fix (White on White issue) */
-  .form-group select option {
-    background-color: #111 !important;
-    color: #fff !important;
-  }
-
-  .select-arrow {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 10px;
-    height: 1px;
-    background: rgba(255,255,255,0.3);
-    pointer-events: none;
-  }
-
-  .select-arrow::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 5px;
-    height: 5px;
-    border-right: 1px solid rgba(255,255,255,0.3);
-    border-bottom: 1px solid rgba(255,255,255,0.3);
-    transform: rotate(45deg) translate(-2px, -2px);
-  }
-
-  .submit-btn {
-    position: relative;
-    background: #fff;
-    color: #000;
-    border: none;
-    padding: 1.5rem 3.5rem;
-    font-family: var(--font-alt);
-    font-size: 0.75rem;
-    letter-spacing: 0.3em;
-    font-weight: 700;
-    cursor: pointer;
-    align-self: flex-start;
-    overflow: hidden;
-    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-  }
-
-  .btn-text {
-    position: relative;
-    z-index: 2;
-  }
-
-  .btn-glow {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    background: rgba(0,0,0,0.05);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    transition: width 0.6s ease, height 0.6s ease;
-  }
-
-  .submit-btn:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(255,255,255,0.1);
-  }
-
-  /* Info Container */
   .info-container {
     display: flex;
     flex-direction: column;
-    gap: 4rem;
+    gap: 6rem;
+    align-items: center; /* Center children */
+    width: 100%;
   }
 
-  .contact-quote {
-    font-family: var(--font-display);
-    font-size: clamp(1.2rem, 2.5vw, 1.8rem);
-    color: rgba(255, 255, 255, 0.35);
-    line-height: 1.4;
-    letter-spacing: 0.05em;
-    margin: 0 0 2rem;
-    padding-left: 2rem;
-    border-left: 1px solid rgba(255,255,255,0.15);
-    font-style: italic;
+  .info-block {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+    width: 100%;
   }
 
   .info-label {
     font-family: var(--font-alt);
-    font-size: 0.65rem;
-    letter-spacing: 0.8em;
+    font-size: 0.7rem;
+    letter-spacing: 0.5em;
     color: rgba(255,255,255,0.25);
-    margin-bottom: 2rem;
+    margin: 0;
+    text-align: center;
   }
 
   .info-link {
-    font-family: var(--font-display);
-    font-size: 2rem;
+    font-family: var(--font-main);
+    font-size: clamp(1.2rem, 4vw, 2.2rem);
     color: #fff;
     text-decoration: none;
+    transition: all 0.4s ease;
+    font-weight: 300;
     letter-spacing: 0.05em;
-    transition: opacity 0.3s ease;
+    display: inline-block;
+    text-align: center;
   }
 
   .info-link:hover {
-    opacity: 0.5;
-  }
-
-  .info-text {
-    font-family: var(--font-main);
-    font-size: 1.1rem;
-    line-height: 1.8;
-    color: rgba(255,255,255,0.6);
-    font-weight: 300;
+    opacity: 0.6;
+    letter-spacing: 0.1em;
   }
 
   .social-links {
     display: flex;
     gap: 3rem;
-  }
-
-  .social-links a {
-    font-family: var(--font-alt);
-    font-size: 0.75rem;
-    letter-spacing: 0.3em;
-    color: #fff;
-    text-decoration: none;
-    transition: opacity 0.3s ease;
-  }
-
-  .social-links a:hover {
-    opacity: 0.4;
+    justify-content: center;
+    width: 100%;
   }
 
   @media (max-width: 1024px) {
-    .contact-grid {
-      grid-template-columns: 1fr;
-      gap: 8rem;
-    }
+    .contact-section { padding: 8rem 0; }
+    .info-container { gap: 4rem; }
+    .hero-title { font-size: 5rem; }
   }
 
   @media (max-width: 768px) {
-    .section-padding { padding: 8rem 0; }
-    .hero-title { font-size: 4rem; }
-    .form-row { grid-template-columns: 1fr; gap: 4rem; }
-    .info-link { font-size: 1.5rem; }
+    .contact-section { padding: 6rem 0; }
+    .hero-tag { font-size: 0.7rem; letter-spacing: 0.5em; }
+    .hero-title { font-size: 3.5rem; }
+    .info-link { 
+      font-size: 1.1rem; /* Smaller to avoid overflow */
+      word-break: break-all;
+      max-width: 90vw;
+    }
+    .social-links {
+      gap: 2rem;
+    }
   }
 </style>
-

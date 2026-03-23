@@ -44,6 +44,7 @@ const jsonLd = {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
     <link rel="canonical" href={canonicalURL} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -80,16 +81,6 @@ const jsonLd = {
   </head>
   
   <body>
-    <div id="preloader" class="preloader">
-      <div class="preloader-content">
-        <div class="logo-wrap">
-          <h2 class="elementor-heading-title elementor-size-default flicker">JUAN ALCARAZ</h2>
-          <span class="role flicker-slow">CINEASTA</span>
-        </div>
-        <div class="loader-bar"></div>
-      </div>
-    </div>
-
     <div class="spotlight" id="spotlight"></div>
     <div class="cursor-dot"></div>
     <div class="cursor-outline"></div>
@@ -105,113 +96,19 @@ const jsonLd = {
     <CookieBanner />
     
     <style is:global>
-      @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600&family=Manrope:wght@200;400;700&family=Playfair+Display:ital@1&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;600&family=Manrope:wght@200;400;700&family=Playfair+Display:ital@1&display=swap');
 
       :root {
         --mouse-x: 50%;
         --mouse-y: 50%;
       }
 
-      .preloader {
-        position: fixed;
-        inset: 0;
-        background: #000;
-        z-index: 10000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: opacity 1.2s cubic-bezier(0.7, 0, 0.3, 1), visibility 1.2s;
-        perspective: 1000px;
-      }
-
-      .preloader.fade-out {
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-      }
-
-      .logo-wrap {
-        text-align: center;
-        transform: translateZ(50px);
-      }
-
-      .elementor-heading-title {
-        font-family: var(--font-display);
-        font-size: clamp(2.5rem, 8vw, 4.5rem);
-        font-weight: 700;
-        letter-spacing: 0.3em;
-        margin: 0;
-        line-height: 1;
-        color: #ffffff;
-        text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
-      }
-
-      .role {
-        font-family: var(--font-alt);
-        font-size: 0.75rem;
-        letter-spacing: 1.5em;
-        color: rgba(255, 255, 255, 0.5);
-        margin-top: 1rem;
-        display: block;
-        text-align: center;
-        padding-left: 1.5em;
-      }
-
-      /* Cinematic Flickering */
-      .flicker {
-        animation: cinematic-flicker 4s infinite;
-      }
-
-      .flicker-slow {
-        animation: cinematic-flicker 6s infinite 1s;
-      }
-
-      @keyframes cinematic-flicker {
-        0%, 100% { opacity: 1; }
-        3% { opacity: 0.8; }
-        6% { opacity: 1; }
-        7% { opacity: 0.9; }
-        8% { opacity: 1; }
-        45% { opacity: 1; }
-        46% { opacity: 0.95; }
-        47% { opacity: 1; }
-      }
-
-      .loader-bar {
-        width: 200px;
-        height: 1px;
-        background: rgba(255, 255, 255, 0.05);
-        margin: 3rem auto 0;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .loader-bar::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(90deg, transparent, #fff, transparent);
-        transform: translateX(-100%);
-        animation: loading-slide 2.5s cubic-bezier(0.7, 0, 0.3, 1) forwards;
-      }
-
-      @keyframes loading-slide {
-        0% { transform: translateX(-100%); }
-        100% { transform: translateX(100%); }
-      }
-
       /* Content Entrance */
       .content-entrance {
-        opacity: 0;
-        transform: scale(1.02);
-        filter: blur(5px);
-        transition: opacity 1.5s cubic-bezier(0.7, 0, 0.3, 1), transform 1.5s cubic-bezier(0.7, 0, 0.3, 1), filter 1.5s ease;
-      }
-
-      body.loaded .content-entrance {
         opacity: 1;
         transform: scale(1);
         filter: blur(0);
+        transition: opacity 1.5s cubic-bezier(0.7, 0, 0.3, 1), transform 1.5s cubic-bezier(0.7, 0, 0.3, 1), filter 1.5s ease;
       }
 
       .cursor-dot, .cursor-outline {
@@ -255,26 +152,6 @@ const jsonLd = {
 
     <script is:inline>
       (function() {
-        const preloader = document.getElementById('preloader');
-        
-        function hidePreloader() {
-          if (preloader && !preloader.classList.contains('fade-out')) {
-            preloader.classList.add('fade-out');
-            document.body.classList.add('loaded');
-            setTimeout(() => { preloader.style.display = 'none'; }, 800);
-          }
-        }
-
-        // Fast hide on load
-        if (document.readyState === 'complete') {
-          hidePreloader();
-        } else {
-          window.addEventListener('load', hidePreloader);
-        }
-
-        // Emergency fail-safe (reduced to 1.5s)
-        setTimeout(hidePreloader, 1500);
-
         // Optimized Mouse Tracking
         const dot = document.querySelector('.cursor-dot');
         const outline = document.querySelector('.cursor-outline');
@@ -298,9 +175,7 @@ const jsonLd = {
 
         // Instant activation for page swaps (View Transitions)
         document.addEventListener('astro:after-swap', () => {
-          document.body.classList.add('loaded');
-          const p = document.getElementById('preloader');
-          if (p) p.style.display = 'none';
+          // No preloader to hide
         });
 
         // Intersection Observer for magic reveals

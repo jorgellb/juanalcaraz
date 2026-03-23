@@ -12,7 +12,7 @@ const legalLinks = [
   <div class="footer-container">
     <div class="footer-main">
       <div class="footer-brand">
-        <a href="/" class="footer-logo">LA OVEJA</a>
+        <a href="/" class="footer-logo">JU<i>A</i>N <i>A</i>LC<i>A</i>R<i>A</i>Z</a>
         <p class="footer-tagline">Cineasta y director audiovisual</p>
       </div>
       
@@ -20,7 +20,7 @@ const legalLinks = [
         <ul class="footer-nav-list">
           <li><a href="/">Inicio</a></li>
           <li><a href="/proyectos">Proyectos</a></li>
-          <li><a href="/biofilmografia">Biofilmografía</a></li>
+          <li><a href="/biofilmografia">Filmografía</a></li>
           <li><a href="/contacto">Contacto</a></li>
         </ul>
       </nav>
@@ -37,7 +37,7 @@ const legalLinks = [
     </div>
     
     <div class="footer-bottom">
-      <p class="copyright">&copy; {currentYear} La Oveja. Todos los derechos reservados.</p>
+      <p class="copyright">&copy; {currentYear} Juan Alcaraz. Todos los derechos reservados.</p>
     </div>
   </div>
 </footer>
@@ -64,7 +64,7 @@ const legalLinks = [
   }
   
   .footer-logo {
-    font-family: var(--font-display);
+    font-family: var(--font-logo);
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-bold);
     letter-spacing: var(--letter-spacing-tight);
@@ -72,6 +72,11 @@ const legalLinks = [
     color: var(--color-text);
     display: block;
     margin-bottom: var(--spacing-sm);
+  }
+  
+  .footer-logo i {
+    font-style: italic;
+    font-weight: inherit;
   }
   
   .footer-tagline {

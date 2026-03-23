@@ -1,0 +1,35 @@
+{
+  "year": 2022,
+  "items": [
+    {
+      "title": "HE PESCADO",
+      "category": "Cortometraje",
+      "roles": "Co-Director – Co-Guionista – Co-Productor – Co-Editor"
+    },
+    {
+      "title": "TINA X – ENORGULLÉCETE",
+      "category": "Videoclip",
+      "roles": "Director – Productor – Editor"
+    },
+    {
+      "title": "TINA X – MARICÓN",
+      "category": "Videoclip",
+      "roles": "Director – Productor – Editor"
+    },
+    {
+      "title": "ADIÓS NOVIEMBRE – EL PEOR DESASTRE",
+      "category": "Lyric Video",
+      "roles": "Director – Productor – Editor"
+    },
+    {
+      "title": "ADIÓS NOVIEMBRE – PLAN MARSHALL",
+      "category": "Lyric Video",
+      "roles": "Director – Productor – Editor"
+    },
+    {
+      "title": "UCAM – LIDERA TU FUTURO 2022",
+      "category": "Spot",
+      "roles": "Director"
+    }
+  ]
+}

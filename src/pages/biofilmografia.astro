@@ -2,11 +2,11 @@
 import Layout from '../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 
-const bioItems = await getCollection('bio');
-const sortedBio = bioItems.sort((a, b) => a.data.order - b.data.order);
+const filmography = await getCollection('filmography');
+const sortedFilmography = filmography.sort((a, b) => b.data.year - a.data.year);
 
-const pageTitle = 'Trayectoria - Juan Alcazar';
-const pageDescription = 'Cineasta, visionario y explorador visual. Descubre la trayectoria y filmografía de Juan Alcazar.';
+const pageTitle = 'Filmografía y Biografía - Juan Alcaraz | Cineasta';
+const pageDescription = 'Descubre la biografía y filmografía completa de Juan Alcaraz, cineasta y director murciano creador de proyectos como Bar Paco, Embarazado y He pescado.';
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
@@ -17,8 +17,8 @@ const pageDescription = 'Cineasta, visionario y explorador visual. Descubre la t
     </div>
     <div class="container hero-container">
       <div class="hero-content">
-        <span class="hero-tag magic-reveal">EL RELATO VISUAL</span>
-        <h1 class="hero-title magic-reveal" style="transition-delay: 0.2s">BIO / FILMOGRAFÍA</h1>
+        <span class="hero-tag magic-reveal">FILMOGRAPHY</span>
+        <h1 class="hero-title magic-reveal" style="transition-delay: 0.2s">FILMOGRAFÍA</h1>
         <div class="hero-line magic-reveal" style="transition-delay: 0.4s"></div>
       </div>
     </div>
@@ -29,16 +29,18 @@ const pageDescription = 'Cineasta, visionario y explorador visual. Descubre la t
       <div class="intro-grid">
         <div class="intro-image-wrap magic-reveal">
           <div class="intro-image">
-            <img src="https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&q=80&w=1200" alt="Juan Alcazar - Cineasta" />
+            <img src="/filmografia-2ra-foto.jpg" alt="Juan Alcaraz - Director de Cine y Productor" />
             <div class="image-overlay"></div>
           </div>
           <div class="frame-decoration"></div>
         </div>
         <div class="intro-text-wrap">
-          <h2 class="section-label magic-reveal">LA VISIÓN</h2>
+          <h2 class="section-label magic-reveal">BIO</h2>
           <div class="intro-p magic-reveal" style="transition-delay: 0.2s">
-            <p>Juan Alcazar es un cineasta cuya visión trasciende los límites de la narrativa convencional, fusionando estética visual de vanguardia con historias profundamente humanas.</p>
-            <p>Cada plano es una declaración de intenciones, cada corte un pulso emocional. Su trabajo explora la intersección entre la luz, el silencio y la verdad cruda de la experiencia humana.</p>
+            <p>Juan Alcaraz (Murcia, 1994) es un cineasta formado en Bellas Artes por la Universidad de Murcia, con un Máster en Dirección Cinematográfica por Nucine y formación complementaria en la ECAM.</p>
+            <p>En 2020 funda la productora Oliva Films, desde la que desarrolla proyectos como Embarazado y He pescado, este último con más de 25 selecciones y 6 premios, entre ellos el de Mejor Montaje en el Festival de Cine de Comedia de Tarazona.</p>
+            <p>Además de dirigir todo tipo de proyectos, ha trabajado en cortometrajes, series y largometrajes como primer y segundo ayudante de dirección. Compagina su actividad como cineasta con la docencia en Dirección y Producción Cinematográfica en ESCIMOSE (Escuela de Cine de Molina de Segura) y en ESI (Escuela Superior Internacional de Diseño).</p>
+            <p>En 2026 estrena Bar Paco, su cortometraje más personal hasta la fecha. Actualmente, se encuentra desarrollando su primer largometraje.</p>
           </div>
         </div>
       </div>
@@ -47,27 +49,27 @@ const pageDescription = 'Cineasta, visionario y explorador visual. Descubre la t
 
   <section class="bio-timeline section-padding">
     <div class="container">
-      <div class="timeline-header magic-reveal">
-        <h2 class="timeline-title-main">CRONOLOGÍA SELECTA</h2>
-        <span class="timeline-subtitle">TRAYECTORIA & HITOS FÍLMICOS</span>
-      </div>
-      
-      <div class="timeline-grid">
-        <div class="timeline-line"></div>
-        {sortedBio.map((item, index) => (
-          <article class="timeline-entry magic-reveal" style={`transition-delay: ${index * 0.1}s`}>
-            <div class="timeline-dot"></div>
-            <div class="timeline-item-content">
-              <header class="timeline-item-header">
-                <span class="date">{item.data.dateLabel}</span>
-                <h3 class="title">{item.data.title}</h3>
-              </header>
-              <div class="body">
-                <p>{item.data.description}</p>
-              </div>
+      <div class="filmography-timeline">
+        {sortedFilmography.map((yearGroup, yearIndex) => (
+          <div class="year-block magic-reveal" style={`transition-delay: ${yearIndex * 0.1}s`}>
+            <div class="year-header">
+              <div class="year-label">{yearGroup.data.year}</div>
             </div>
-            <div class="timeline-number">0{index + 1}</div>
-          </article>
+            
+            <div class="projects-container">
+              {yearGroup.data.items.map((item) => (
+                <div class="timeline-film-item">
+                  <div class="film-info">
+                    <h4 class="film-title">{item.title}</h4>
+                    <span class="film-category">{item.category}</span>
+                  </div>
+                  <div class="film-roles">
+                    <p>{item.roles}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         ))}
       </div>
     </div>
@@ -76,11 +78,11 @@ const pageDescription = 'Cineasta, visionario y explorador visual. Descubre la t
 
 <style>
   .section-padding {
-    padding: 15rem 0;
+    padding: 8rem 0;
   }
 
   .bio-hero {
-    height: 90vh;
+    height: 70vh;
     position: relative;
     display: flex;
     align-items: center;
@@ -91,7 +93,7 @@ const pageDescription = 'Cineasta, visionario y explorador visual. Descubre la t
   .hero-bg {
     position: absolute;
     inset: 0;
-    background: url('https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=2000') no-repeat center/cover;
+    background: url('/filmografia-1ra-foto.jpg') no-repeat center/cover;
     opacity: 0.5;
     transform: scale(1.05);
   }
@@ -130,7 +132,7 @@ const pageDescription = 'Cineasta, visionario y explorador visual. Descubre la t
   }
 
   .hero-line {
-    width: 20%;
+    width: 60px;
     height: 1px;
     background: white;
     margin-top: 4rem;
@@ -140,13 +142,14 @@ const pageDescription = 'Cineasta, visionario y explorador visual. Descubre la t
   /* Intro Section */
   .intro-grid {
     display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 10rem;
-    align-items: center;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 6rem;
+    align-items: start;
   }
 
   .intro-image-wrap {
     position: relative;
+    max-width: 450px;
   }
 
   .intro-image {
@@ -171,6 +174,7 @@ const pageDescription = 'Cineasta, visionario y explorador visual. Descubre la t
     height: 100px;
     border-top: 1px solid rgba(255,255,255,0.2);
     border-right: 1px solid rgba(255,255,255,0.2);
+    z-index: 1;
   }
 
   .section-label {
@@ -183,126 +187,157 @@ const pageDescription = 'Cineasta, visionario y explorador visual. Descubre la t
 
   .intro-p p {
     font-family: var(--font-main);
-    font-size: 1.2rem;
+    font-size: 1.15rem;
     line-height: 1.8;
     font-weight: 300;
-    margin-bottom: 2rem;
-    color: rgba(255,255,255,0.8);
+    margin-bottom: 2.5rem;
+    color: rgba(255,255,255,0.85);
   }
 
   /* Timeline */
-  .timeline-header {
-    margin-bottom: 12rem;
-    text-align: center;
-  }
-
-  .timeline-title-main {
-    font-family: var(--font-display);
-    font-size: 5rem;
-    letter-spacing: 0.2em;
-    line-height: 1;
-    margin-bottom: 1.5rem;
-  }
-
-  .timeline-subtitle {
-    font-family: var(--font-alt);
-    font-size: 0.7rem;
-    letter-spacing: 0.8em;
-    color: rgba(255,255,255,0.4);
-  }
-
-  .timeline-grid {
+  .filmography-timeline {
     position: relative;
-    max-width: 1000px;
+    max-width: 1200px;
     margin: 0 auto;
-    padding-left: 10%;
   }
 
-  .timeline-line {
+  .year-block {
+    position: relative;
+    margin-bottom: 15rem;
+  }
+
+  .year-header {
+    position: relative;
+    padding: 2rem 0;
+    text-align: center;
+    z-index: 2;
+    margin-bottom: 4rem;
+  }
+
+  .year-label {
+    font-family: var(--font-magic);
+    font-size: clamp(2.5rem, 8vw, 3.5rem);
+    font-style: italic;
+    font-weight: 200;
+    line-height: 1;
+    color: #fff;
+    letter-spacing: 0.1em;
+    margin: 0;
+    opacity: 0.85;
+  }
+
+  .projects-container {
+    padding-left: 10rem;
+    position: relative;
+  }
+
+  .projects-container::before {
+    content: '';
     position: absolute;
-    left: 0;
-    top: 0;
+    left: 4.5rem;
+    top: -3rem;
     bottom: 0;
     width: 1px;
     background: linear-gradient(to bottom, 
-      transparent, 
-      rgba(255,255,255,0.2) 10%, 
-      rgba(255,255,255,0.2) 90%, 
-      transparent
+      rgba(255,255,255,0.1) 0%, 
+      rgba(255,255,255,0.02) 100%
     );
   }
 
-  .timeline-entry {
+  .timeline-film-item {
+    display: grid;
+    grid-template-columns: 1.4fr 1.6fr;
+    gap: 4rem;
+    padding: 2.5rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
-    margin-bottom: 10rem;
-    padding-left: 5rem;
   }
 
-  .timeline-dot {
+  .timeline-film-item::before {
+    content: '';
     position: absolute;
-    left: -4px;
-    top: 0.5rem;
-    width: 9px;
-    height: 9px;
-    background: #fff;
+    left: -5.625rem; /* 4.5rem - 10rem - half dot (2px) */
+    top: 3.1rem;
+    width: 4px;
+    height: 4px;
+    background: rgba(255,255,255,0.2);
     border-radius: 50%;
-    box-shadow: 0 0 15px white;
+    z-index: 3;
+    transition: all 0.4s ease;
   }
 
-  .timeline-item-header {
-    margin-bottom: 2rem;
+  .timeline-film-item:hover {
+    padding-left: 2rem;
+    border-bottom-color: rgba(255,255,255,0.1);
   }
 
-  .date {
-    font-family: var(--font-alt);
-    font-size: 0.75rem;
-    letter-spacing: 0.4em;
-    color: rgba(255,255,255,0.4);
-    display: block;
-    margin-bottom: 1rem;
+  .timeline-film-item:hover::before {
+    background: #fff;
+    box-shadow: 0 0 10px #fff;
+    transform: scale(1.5);
   }
 
-  .title {
-    font-family: var(--font-display);
-    font-size: 3rem;
-    letter-spacing: 0.05em;
-    line-height: 1;
-    color: #fff;
+  .film-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
   }
 
-  .body p {
+  .film-title {
     font-family: var(--font-main);
-    font-size: 1.1rem;
-    line-height: 1.7;
-    color: rgba(255,255,255,0.6);
-    max-width: 700px;
-    font-weight: 300;
+    font-size: 1rem;
+    font-weight: 200;
+    letter-spacing: 0.1em;
+    color: #fff;
+    margin: 0;
+    line-height: 1.2;
+    text-transform: uppercase;
   }
 
-  .timeline-number {
-    position: absolute;
-    right: 0;
-    top: 0;
-    font-family: var(--font-display);
-    font-size: 6rem;
-    opacity: 0.03;
-    pointer-events: none;
-    line-height: 1;
+  .film-category {
+    font-family: var(--font-alt);
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.2);
+    text-transform: uppercase;
   }
 
+  .film-roles {
+    font-family: var(--font-main);
+    font-size: 0.8rem;
+    font-weight: 200;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.3);
+    display: flex;
+    align-items: center;
+  }
+
+  /* Responsive */
   @media (max-width: 1024px) {
     .intro-grid {
       grid-template-columns: 1fr;
-      gap: 5rem;
+      gap: 4rem;
     }
-    .timeline-grid { padding-left: 0; }
+    .intro-image-wrap { margin: 0 auto; }
+    .projects-container { padding-left: 5rem; }
+    .projects-container::before { left: 1rem; }
+    .timeline-film-item::before { left: -4.125rem; }
   }
 
   @media (max-width: 768px) {
-    .section-padding { padding: 8rem 0; }
-    .hero-title { font-size: 4.5rem; }
-    .timeline-title-main { font-size: 3rem; }
-    .title { font-size: 2.22rem; }
-    .timeline-entry { padding-left: 2rem; }
+    .section-padding { padding: 4rem 0; }
+    .hero-title { font-size: 3.5rem; }
+    .projects-container { padding-left: 3rem; }
+    .timeline-film-item {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      padding: 2rem 0;
+    }
+    .timeline-film-item::before { 
+      top: 2.5rem; 
+      left: -2.125rem; 
+    }
+    .film-roles { font-size: 0.75rem; }
   }
 </style>

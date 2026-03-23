@@ -2,10 +2,10 @@
 const currentPath = Astro.url.pathname;
 
 const navItems = [
-  { href: '/', label: 'Inicio', sub: 'Home Reel' },
-  { href: '/proyectos', label: 'Proyectos', sub: 'Obras Seleccionadas' },
-  { href: '/biofilmografia', label: 'Biografía', sub: 'Trayectoria & Cine' },
-  { href: '/contacto', label: 'Contacto', sub: 'Colaboraciones' }
+  { href: '/', label: 'Inicio', sub: 'Home reel' },
+  { href: '/proyectos', label: 'Proyectos', sub: 'Projects' },
+  { href: '/biofilmografia', label: 'Filmografía', sub: 'Filmography' },
+  { href: '/contacto', label: 'Contacto', sub: 'Write the future' }
 ];
 ---
 
@@ -13,9 +13,9 @@ const navItems = [
   <div class="header-inner">
     <div class="logo-container">
       <a href="/" class="logo-link">
-        <h2 class="elementor-heading-title premium-logo">JUAN ALCARAZ</h2>
+        <h2 class="elementor-heading-title premium-logo">JU<i>A</i>N <i>A</i>LC<i>A</i>R<i>A</i>Z</h2>
       </a>
-      <span class="role flicker-slow">CINEASTA</span>
+      <span class="role flicker-slow">CINE<i>A</i>ST<i>A</i></span>
     </div>
 
     <button class="menu-btn" id="menu-toggle" aria-label="Abrir menú">
@@ -52,11 +52,9 @@ const navItems = [
 
       <div class="menu-footer">
         <div class="social-row">
-          <a href="https://vimeo.com/juanalcaraz" target="_blank" class="f-link">VIMEO</a>
-          <span class="sep">/</span>
           <a href="https://instagram.com/juanalcarazcine" target="_blank" class="f-link">INSTAGRAM</a>
           <span class="sep">/</span>
-          <a href="mailto:hola@juanalcaraz.es" class="f-link">HOLA@JUANALCARAZ.ES</a>
+          <a href="mailto:juanalcarazcine@gmail.com" class="f-link">JUANALCARAZCINE@GMAIL.COM</a>
         </div>
         <div class="legal-row">
           <a href="/aviso-legal" class="l-link">AVISO LEGAL</a>
@@ -106,23 +104,21 @@ const navItems = [
   }
 
   .premium-logo {
-    font-family: var(--font-display);
+    font-family: var(--font-logo);
     font-size: 2.5rem;
     font-weight: 700;
     letter-spacing: 0.35em;
     margin: 0;
     line-height: 1;
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0);
     transition: all 0.6s ease;
   }
 
   .logo-link:hover .premium-logo {
     letter-spacing: 0.45em;
-    text-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
   }
 
   .role {
-    font-family: var(--font-alt);
+    font-family: var(--font-logo);
     font-size: 0.6rem;
     letter-spacing: 1.8em;
     color: #ffffff;
@@ -132,6 +128,12 @@ const navItems = [
     display: block;
     padding-left: 1.8em;
     mix-blend-mode: difference;
+  }
+
+  /* Target all italicized letters inside logo elements */
+  .premium-logo i, .role i {
+    font-style: italic;
+    font-weight: inherit;
   }
 
   /* Menu Toggle Button */
