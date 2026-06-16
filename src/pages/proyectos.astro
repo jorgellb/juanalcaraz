@@ -395,7 +395,7 @@ const itemListLd = {
         // Estilos inline (los estilos scoped de Astro no aplican a elementos inyectados)
         iframe.style.cssText =
           'position:absolute;top:0;left:0;width:100%;height:100%;border:0;background:#000;' +
-          'transform-origin:center;transform:scale(' + (isYT ? 1.6 : 1.06) + ');';
+          'transform-origin:center;transform:scale(' + (isYT ? 1.12 : 1.0) + ');';
         if (isYT) {
           // Activa la API para poder reiniciar el vídeo en bucle al terminar
           iframe.addEventListener('load', () => {
