@@ -1,6 +1,5 @@
 ---
 import { ClientRouter } from 'astro:transitions';
-import type { CollectionEntry } from 'astro:content';
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import VideoModal from '../components/VideoModal.astro';
@@ -10,31 +9,90 @@ interface Props {
   title: string;
   description?: string;
   image?: string;
-  type?: 'website' | 'article';
-  project?: CollectionEntry<'projects'>;
+  type?: 'website' | 'article' | 'profile';
+  noindex?: boolean;
+  jsonLd?: Record<string, any> | Record<string, any>[];
 }
 
 const {
   title,
-  description = 'Juan Alcaraz - Cineasta murciano. Director de videoclips, cortometrajes, spots y proyectos audiovisuales.',
+  description = 'Juan Alcaraz, cineasta y director audiovisual murciano. Dirección de cortometrajes, videoclips, spots publicitarios y proyectos audiovisuales.',
   image = '/og-default.jpg',
-  type = 'website'
+  type = 'website',
+  noindex = false,
+  jsonLd,
 } = Astro.props;
 
+const SITE = 'https://juanalcaraz.es';
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const imageURL = new URL(image, Astro.site);
 
-const jsonLd = {
+const robotsContent = noindex
+  ? 'noindex, nofollow'
+  : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
+
+const FONTS_HREF = 'https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;600&family=Manrope:wght@200;400;700&family=Playfair+Display:ital@1&display=swap';
+
+// Breadcrumbs automáticos según la ruta
+const segments = Astro.url.pathname.split('/').filter(Boolean);
+const SEGMENT_NAMES: Record<string, string> = {
+  proyectos: 'Proyectos',
+  biofilmografia: 'Filmografía y Biografía',
+  contacto: 'Contacto',
+  'aviso-legal': 'Aviso Legal',
+  'politica-privacidad': 'Política de Privacidad',
+  'politica-cookies': 'Política de Cookies',
+};
+const breadcrumbLd = segments.length === 0 ? null : {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${SITE}/` },
+    ...segments.map((seg, i) => ({
+      '@type': 'ListItem',
+      position: i + 2,
+      name: SEGMENT_NAMES[seg] ?? seg,
+      item: `${SITE}/${segments.slice(0, i + 1).join('/')}`,
+    })),
+  ],
+};
+
+const personLd = {
   '@context': 'https://schema.org',
   '@type': 'Person',
+  '@id': `${SITE}/#person`,
   name: 'Juan Alcaraz',
-  url: 'https://juanalcaraz.es',
-  jobTitle: 'Cineasta',
+  alternateName: 'Juan Alcaraz Cine',
+  url: SITE,
+  image: `${SITE}/og-default.jpg`,
+  jobTitle: 'Cineasta y Director Audiovisual',
+  description: 'Cineasta y director audiovisual murciano, especializado en cortometrajes, videoclips, spots publicitarios y ficción.',
+  knowsAbout: ['Dirección de cine', 'Cortometrajes', 'Videoclips', 'Spots publicitarios', 'Producción audiovisual', 'Ficción'],
+  alumniOf: { '@type': 'CollegeOrUniversity', name: 'Universidad de Murcia' },
+  address: { '@type': 'PostalAddress', addressLocality: 'Murcia', addressRegion: 'Región de Murcia', addressCountry: 'ES' },
+  email: 'mailto:juanalcarazcine@gmail.com',
   sameAs: [
-    'https://vimeo.com/juanalcaraz',
     'https://www.instagram.com/juanalcarazcine/',
-    'https://www.linkedin.com/in/juan-alcaraz-b84724174/'
-  ]
+    'https://www.linkedin.com/in/juan-alcaraz-b84724174/',
+  ],
 };
+
+const websiteLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${SITE}/#website`,
+  name: 'Juan Alcaraz | Cineasta',
+  url: SITE,
+  inLanguage: 'es-ES',
+  publisher: { '@id': `${SITE}/#person` },
+};
+
+const schemas = [
+  personLd,
+  ...(type === 'website' ? [websiteLd] : []),
+  ...(breadcrumbLd ? [breadcrumbLd] : []),
+  ...(jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : []),
+];
 ---
 
 <!DOCTYPE html>
@@ -43,48 +101,51 @@ const jsonLd = {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
-    <link rel="canonical" href={canonicalURL} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    
+
     <title>{title}</title>
     <meta name="description" content={description} />
-    
+    <meta name="author" content="Juan Alcaraz" />
+    <meta name="robots" content={robotsContent} />
+    <meta name="theme-color" content="#000000" />
+    <link rel="canonical" href={canonicalURL} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Fuentes (preconnect para rendimiento) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href={FONTS_HREF} />
+
+    <!-- Open Graph -->
     <meta property="og:type" content={type} />
+    <meta property="og:site_name" content="Juan Alcaraz | Cineasta" />
+    <meta property="og:locale" content="es_ES" />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={new URL(image, Astro.site)} />
-    
+    <meta property="og:image" content={imageURL} />
+    <meta property="og:image:alt" content="Juan Alcaraz — Cineasta y Director Audiovisual" />
+
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content={canonicalURL} />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={new URL(image, Astro.site)} />
-    
+    <meta name="twitter:image" content={imageURL} />
+
     <ClientRouter />
-    
-    <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
-    
-    {type === 'website' && (
-      <script is:inline type="application/ld+json" set:html={JSON.stringify({
-        '@context': 'https://schema.org',
-        '@type': 'WebSite',
-        name: 'Juan Alcaraz | Cineasta',
-        url: 'https://juanalcaraz.es',
-        potentialAction: {
-          '@type': 'SearchAction',
-          target: 'https://juanalcaraz.es/proyectos?q={search_term_string}',
-          'query-input': 'required name=search_term_string'
-        }
-      })} />
-    )}
+
+    {schemas.map((schema) => (
+      <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+    ))}
   </head>
   
   <body>
     <div class="spotlight" id="spotlight"></div>
     <div class="cursor-dot"></div>
     <div class="cursor-outline"></div>
-    <div class="grain-overlay"></div>
+
+    <!-- Grano de película 35 mm (ruido real por fotograma) -->
+    <canvas class="film-grain" aria-hidden="true" transition:persist></canvas>
     
     <Header />
     
@@ -96,8 +157,6 @@ const jsonLd = {
     <CookieBanner />
     
     <style is:global>
-      @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;600&family=Manrope:wght@200;400;700&family=Playfair+Display:ital@1&display=swap');
-
       :root {
         --mouse-x: 50%;
         --mouse-y: 50%;
@@ -136,17 +195,24 @@ const jsonLd = {
         transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
       }
 
-      .grain-overlay {
+      /* Grano de película 35 mm */
+      .film-grain {
         position: fixed;
         inset: 0;
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3%3Ffilter id='n' %3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-        opacity: 0.05;
+        width: 100%;
+        height: 100%;
         pointer-events: none;
-        z-index: 10001;
+        z-index: 9994;
+        opacity: 0.85;
+        mix-blend-mode: overlay;
       }
 
       @media (max-width: 768px) {
         .cursor-dot, .cursor-outline, .spotlight { display: none; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .film-grain { display: none; }
       }
     </style>
 
@@ -190,6 +256,58 @@ const jsonLd = {
         const observe = () => document.querySelectorAll('.magic-reveal').forEach(el => revealObserver.observe(el));
         observe();
         document.addEventListener('astro:page-load', observe);
+      })();
+    </script>
+
+    <script is:inline>
+      (function() {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        if (window.__grainStarted) return;
+        const canvas = document.querySelector('.film-grain');
+        if (!canvas) return;
+        window.__grainStarted = true;
+        const ctx = canvas.getContext('2d');
+
+        // Tile de ruido pequeño que se repite (rendimiento)
+        const TILE = 160;
+        const off = document.createElement('canvas');
+        off.width = off.height = TILE;
+        const offCtx = off.getContext('2d');
+        const img = offCtx.createImageData(TILE, TILE);
+        const data = img.data;
+
+        let pattern = null;
+        function makeNoise() {
+          for (let i = 0; i < data.length; i += 4) {
+            const v = (Math.random() * 255) | 0;
+            data[i] = data[i + 1] = data[i + 2] = v;
+            data[i + 3] = 45; // intensidad del grano
+          }
+          offCtx.putImageData(img, 0, 0);
+          pattern = ctx.createPattern(off, 'repeat');
+        }
+
+        function resize() {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        // ~24 fps = cadencia de cine
+        let last = 0;
+        const interval = 1000 / 24;
+        function loop(t) {
+          if (t - last >= interval) {
+            last = t;
+            makeNoise();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = pattern;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+          }
+          requestAnimationFrame(loop);
+        }
+        requestAnimationFrame(loop);
       })();
     </script>
   </body>

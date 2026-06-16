@@ -7,9 +7,19 @@ const sortedFilmography = filmography.sort((a, b) => b.data.year - a.data.year);
 
 const pageTitle = 'Filmografía y Biografía - Juan Alcaraz | Cineasta';
 const pageDescription = 'Descubre la biografía y filmografía completa de Juan Alcaraz, cineasta y director murciano creador de proyectos como Bar Paco, Embarazado y He pescado.';
+
+// Datos estructurados: página de perfil del cineasta
+const profilePageLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfilePage',
+  url: new URL('/biofilmografia', Astro.site).href,
+  name: pageTitle,
+  description: pageDescription,
+  mainEntity: { '@id': 'https://juanalcaraz.es/#person' },
+};
 ---
 
-<Layout title={pageTitle} description={pageDescription}>
+<Layout title={pageTitle} description={pageDescription} jsonLd={profilePageLd}>
   <section class="bio-hero">
     <div class="hero-bg">
       <div class="hero-overlay"></div>
@@ -29,10 +39,8 @@ const pageDescription = 'Descubre la biografía y filmografía completa de Juan 
       <div class="intro-grid">
         <div class="intro-image-wrap magic-reveal">
           <div class="intro-image">
-            <img src="/filmografia-2ra-foto.jpg" alt="Juan Alcaraz - Director de Cine y Productor" />
-            <div class="image-overlay"></div>
+            <img src="/biofilmografia.jpg" alt="Juan Alcaraz - Director de Cine y Productor" />
           </div>
-          <div class="frame-decoration"></div>
         </div>
         <div class="intro-text-wrap">
           <h2 class="section-label magic-reveal">BIO</h2>
@@ -50,12 +58,13 @@ const pageDescription = 'Descubre la biografía y filmografía completa de Juan 
   <section class="bio-timeline section-padding">
     <div class="container">
       <div class="filmography-timeline">
-        {sortedFilmography.map((yearGroup, yearIndex) => (
-          <div class="year-block magic-reveal" style={`transition-delay: ${yearIndex * 0.1}s`}>
+        {sortedFilmography.map((yearGroup) => (
+          <div class="year-block magic-reveal">
             <div class="year-header">
-              <div class="year-label">{yearGroup.data.year}</div>
+              <span class="year-label" data-year={yearGroup.data.year}>{yearGroup.data.year}</span>
+              <span class="year-line"></span>
             </div>
-            
+
             <div class="projects-container">
               {yearGroup.data.items.map((item) => (
                 <div class="timeline-film-item">
@@ -79,6 +88,14 @@ const pageDescription = 'Descubre la biografía y filmografía completa de Juan 
 <style>
   .section-padding {
     padding: 8rem 0;
+  }
+
+  .bio-intro {
+    padding-bottom: 3rem;
+  }
+
+  .bio-timeline {
+    padding-top: 4rem;
   }
 
   .bio-hero {
@@ -129,6 +146,9 @@ const pageDescription = 'Descubre la biografía y filmografía completa de Juan 
     line-height: 0.85;
     margin: 0;
     letter-spacing: -0.02em;
+    /* Letras huecas (solo contorno) */
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(255,255,255,0.9);
   }
 
   .hero-line {
@@ -142,21 +162,21 @@ const pageDescription = 'Descubre la biografía y filmografía completa de Juan 
   /* Intro Section */
   .intro-grid {
     display: grid;
-    grid-template-columns: 1fr 1.2fr;
-    gap: 6rem;
-    align-items: start;
+    grid-template-columns: 1.8fr 1fr;
+    gap: 2.5rem;
+    align-items: stretch;
   }
 
   .intro-image-wrap {
     position: relative;
-    max-width: 450px;
+    max-width: 820px;
   }
 
   .intro-image {
     position: relative;
-    aspect-ratio: 4/5;
+    height: 100%;
+    min-height: 100%;
     overflow: hidden;
-    clip-path: polygon(0 0, 100% 0, 100% 90%, 90% 100%, 0 100%);
   }
 
   .intro-image img {
@@ -164,17 +184,15 @@ const pageDescription = 'Descubre la biografía y filmografía completa de Juan 
     height: 100%;
     object-fit: cover;
     filter: grayscale(0.2) contrast(1.1);
-  }
-
-  .frame-decoration {
-    position: absolute;
-    top: -20px;
-    right: -20px;
-    width: 100px;
-    height: 100px;
-    border-top: 1px solid rgba(255,255,255,0.2);
-    border-right: 1px solid rgba(255,255,255,0.2);
-    z-index: 1;
+    /* Bordes difuminados en los 4 lados para que no se note el corte */
+    -webkit-mask-image:
+      linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%),
+      linear-gradient(to bottom, transparent 0%, #000 10%, #000 90%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-image:
+      linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%),
+      linear-gradient(to bottom, transparent 0%, #000 10%, #000 90%, transparent 100%);
+    mask-composite: intersect;
   }
 
   .section-label {
@@ -203,44 +221,76 @@ const pageDescription = 'Descubre la biografía y filmografía completa de Juan 
 
   .year-block {
     position: relative;
-    margin-bottom: 15rem;
+    margin-bottom: 6rem;
   }
 
   .year-header {
     position: relative;
-    padding: 2rem 0;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+    padding: 1.5rem 0;
+    margin-bottom: 2.5rem;
     z-index: 2;
-    margin-bottom: 4rem;
+    overflow: hidden;
   }
 
   .year-label {
-    font-family: var(--font-magic);
-    font-size: clamp(2.5rem, 8vw, 3.5rem);
-    font-style: italic;
-    font-weight: 200;
-    line-height: 1;
-    color: #fff;
-    letter-spacing: 0.1em;
+    position: relative;
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 400;
+    line-height: 0.9;
+    letter-spacing: 0.04em;
     margin: 0;
-    opacity: 0.85;
+    background: linear-gradient(180deg, #ffffff 0%, rgba(255,255,255,0.4) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Giant ghost year in the background */
+  .year-label::before {
+    content: attr(data-year);
+    position: absolute;
+    left: -0.6rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: clamp(6rem, 17vw, 13rem);
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255,255,255,0.06);
+    white-space: nowrap;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .year-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right,
+      rgba(255,255,255,0.4) 0%,
+      rgba(255,255,255,0.06) 55%,
+      transparent 100%
+    );
   }
 
   .projects-container {
-    padding-left: 10rem;
+    padding-left: 8rem;
     position: relative;
   }
 
   .projects-container::before {
     content: '';
     position: absolute;
-    left: 4.5rem;
-    top: -3rem;
+    left: 3.5rem;
+    top: -2.5rem;
     bottom: 0;
-    width: 1px;
-    background: linear-gradient(to bottom, 
-      rgba(255,255,255,0.1) 0%, 
-      rgba(255,255,255,0.02) 100%
+    width: 2px;
+    background: linear-gradient(to bottom,
+      rgba(255,255,255,0.28) 0%,
+      rgba(255,255,255,0.06) 55%,
+      transparent 100%
     );
   }
 
@@ -248,34 +298,39 @@ const pageDescription = 'Descubre la biografía y filmografía completa de Juan 
     display: grid;
     grid-template-columns: 1.4fr 1.6fr;
     gap: 4rem;
-    padding: 2.5rem 0;
+    padding: 2rem;
+    border-radius: 10px;
     border-bottom: 1px solid rgba(255,255,255,0.05);
-    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
   }
 
   .timeline-film-item::before {
     content: '';
     position: absolute;
-    left: -5.625rem; /* 4.5rem - 10rem - half dot (2px) */
-    top: 3.1rem;
-    width: 4px;
-    height: 4px;
-    background: rgba(255,255,255,0.2);
+    left: calc(-4.5rem - 4px);
+    top: 2.6rem;
+    width: 9px;
+    height: 9px;
+    background: #fff;
     border-radius: 50%;
+    opacity: 0.45;
+    box-shadow: 0 0 0 4px rgba(255,255,255,0.05), 0 0 12px rgba(255,255,255,0.35);
     z-index: 3;
     transition: all 0.4s ease;
   }
 
   .timeline-film-item:hover {
-    padding-left: 2rem;
-    border-bottom-color: rgba(255,255,255,0.1);
+    background: linear-gradient(to right, rgba(255,255,255,0.05), transparent 80%);
+    transform: translateX(10px);
+    border-bottom-color: rgba(255,255,255,0.12);
   }
 
   .timeline-film-item:hover::before {
-    background: #fff;
-    box-shadow: 0 0 10px #fff;
-    transform: scale(1.5);
+    opacity: 1;
+    /* Contrarresta el translateX del item para que el punto NO se desplace, solo se ilumine */
+    transform: translateX(-10px) scale(1.4);
+    box-shadow: 0 0 0 5px rgba(255,255,255,0.08), 0 0 20px rgba(255,255,255,0.7);
   }
 
   .film-info {
@@ -287,12 +342,17 @@ const pageDescription = 'Descubre la biografía y filmografía completa de Juan 
   .film-title {
     font-family: var(--font-main);
     font-size: 1rem;
-    font-weight: 200;
+    font-weight: 300;
     letter-spacing: 0.1em;
-    color: #fff;
+    color: rgba(255,255,255,0.92);
     margin: 0;
     line-height: 1.2;
     text-transform: uppercase;
+    transition: color 0.4s ease;
+  }
+
+  .timeline-film-item:hover .film-title {
+    color: #fff;
   }
 
   .film-category {
@@ -320,23 +380,25 @@ const pageDescription = 'Descubre la biografía y filmografía completa de Juan 
       gap: 4rem;
     }
     .intro-image-wrap { margin: 0 auto; }
-    .projects-container { padding-left: 5rem; }
-    .projects-container::before { left: 1rem; }
-    .timeline-film-item::before { left: -4.125rem; }
+    .intro-image { aspect-ratio: 4/5; height: auto; min-height: 0; }
+    .projects-container { padding-left: 4.5rem; }
+    .projects-container::before { left: 1.5rem; }
+    .timeline-film-item::before { left: calc(-3rem - 4px); }
   }
 
   @media (max-width: 768px) {
     .section-padding { padding: 4rem 0; }
     .hero-title { font-size: 3.5rem; }
     .projects-container { padding-left: 3rem; }
+    .projects-container::before { left: 1rem; }
     .timeline-film-item {
       grid-template-columns: 1fr;
       gap: 1rem;
-      padding: 2rem 0;
+      padding: 1.5rem 1rem;
     }
-    .timeline-film-item::before { 
-      top: 2.5rem; 
-      left: -2.125rem; 
+    .timeline-film-item::before {
+      top: 2rem;
+      left: calc(-2rem - 4px);
     }
     .film-roles { font-size: 0.75rem; }
   }

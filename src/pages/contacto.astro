@@ -14,8 +14,8 @@ const pageDescription = 'Contacta con Juan Alcaraz, cineasta y director para nue
     <div class="container hero-container">
       <div class="hero-content">
         <span class="hero-tag magic-reveal">WRITE THE FUTURE</span>
-        <h1 class="hero-title magic-reveal" style="transition-delay: 0.2s">CONTACTO</h1>
-        <div class="hero-line magic-reveal" style="transition-delay: 0.4s"></div>
+        <h1 class="hero-title magic-reveal">CONTACTO</h1>
+        <div class="hero-line magic-reveal"></div>
       </div>
     </div>
   </section>
@@ -24,17 +24,17 @@ const pageDescription = 'Contacta con Juan Alcaraz, cineasta y director para nue
     <div class="container">
       <div class="contact-center-wrap">
         <div class="info-container">
-          <div class="info-block magic-reveal" style="transition-delay: 0.6s">
+          <div class="info-block magic-reveal">
             <h3 class="info-label">EMAIL DIRECTO</h3>
             <a href="mailto:juanalcarazcine@gmail.com" class="info-link">JUANALCARAZCINE@GMAIL.COM</a>
           </div>
-          
-          <div class="info-block magic-reveal" style="transition-delay: 0.8s">
+
+          <div class="info-block magic-reveal">
             <h3 class="info-label">TELÉFONO</h3>
             <a href="tel:+34663384218" class="info-link">+34 663 384 218</a>
           </div>
 
-          <div class="info-block magic-reveal" style="transition-delay: 1s">
+          <div class="info-block magic-reveal">
             <h3 class="info-label">SOCIAL</h3>
             <div class="social-links">
               <a href="https://instagram.com/juanalcarazcine" target="_blank" class="info-link">INSTAGRAM</a>
@@ -51,15 +51,19 @@ const pageDescription = 'Contacta con Juan Alcaraz, cineasta y director para nue
     height: 70vh;
     position: relative;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     background: #000;
     overflow: hidden;
+  }
+
+  .hero-container {
+    padding-top: 16vh;
   }
 
   .hero-bg {
     position: absolute;
     inset: 0;
-    background: url('/contacto.jpg') no-repeat center/cover;
+    background: url('/contacto.jpg') no-repeat center 88% / cover;
     opacity: 0.5;
     transform: scale(1.05);
   }
@@ -95,6 +99,9 @@ const pageDescription = 'Contacta con Juan Alcaraz, cineasta y director para nue
     line-height: 1;
     margin: 0;
     letter-spacing: 0.1em;
+    /* Letras huecas (solo contorno) */
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(255,255,255,0.9);
   }
 
   .hero-line {
@@ -144,13 +151,13 @@ const pageDescription = 'Contacta con Juan Alcaraz, cineasta y director para nue
   }
 
   .info-link {
-    font-family: var(--font-main);
-    font-size: clamp(1.2rem, 4vw, 2.2rem);
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 5vw, 2.8rem);
     color: #fff;
     text-decoration: none;
     transition: all 0.4s ease;
-    font-weight: 300;
-    letter-spacing: 0.05em;
+    font-weight: 400;
+    letter-spacing: 0.08em;
     display: inline-block;
     text-align: center;
   }

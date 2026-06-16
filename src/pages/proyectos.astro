@@ -10,9 +10,37 @@ const categories = ['TODOS', 'FICCIÓN', 'VIDEOCLIP', 'PUBLICIDAD', 'OTRAS PRODU
 
 const pageTitle = 'Proyectos Audiovisuales y Cortometrajes | Juan Alcaraz';
 const pageDescription = 'Explora el portfolio completo de proyectos, publicidad, ficción y videoclips de Juan Alcaraz, director y cineasta.';
+
+// Datos estructurados: lista de obras del portafolio
+const itemListLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: pageTitle,
+  description: pageDescription,
+  url: new URL('/proyectos', Astro.site).href,
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: sortedProjects.length,
+    itemListElement: sortedProjects.map((p, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      item: {
+        '@type': 'CreativeWork',
+        name: p.data.title,
+        genre: p.data.category,
+        datePublished: String(p.data.year),
+        url: p.data.videoUrl,
+        creator: { '@type': 'Person', name: 'Juan Alcaraz' },
+        ...(p.data.thumbnail
+          ? { image: new URL(p.data.thumbnail, Astro.site).href }
+          : {}),
+      },
+    })),
+  },
+};
 ---
 
-<Layout title={pageTitle} description={pageDescription}>
+<Layout title={pageTitle} description={pageDescription} jsonLd={itemListLd}>
   <section class="projects-hero">
     <div class="container">
       <div class="hero-content">
@@ -89,11 +117,14 @@ const pageDescription = 'Explora el portfolio completo de proyectos, publicidad,
     line-height:0.8;
     letter-spacing: 0.05em;
     margin: 0;
+    /* Letras huecas (solo contorno) */
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(255,255,255,0.9);
   }
 
   .projects-main {
     background: #000;
-    padding-bottom: 15rem;
+    padding-bottom: 0;
   }
 
   /* Filter Bar */
