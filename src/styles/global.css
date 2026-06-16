@@ -99,6 +99,27 @@ h1, h2, h3, .h-display {
   font-weight: 400;
 }
 
+/* ===== Transición cinematográfica entre páginas (fundido a negro) ===== */
+::view-transition-old(root) {
+  animation: vt-dip-out 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+::view-transition-new(root) {
+  animation: vt-dip-in 0.55s cubic-bezier(0.4, 0, 0.2, 1) 0.32s both;
+}
+@keyframes vt-dip-out {
+  to { opacity: 0; }
+}
+@keyframes vt-dip-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
+
 /* Magical Reveal */
 .magic-reveal {
   opacity: 0;

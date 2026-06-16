@@ -351,4 +351,96 @@ const itemListLd = {
 
   document.addEventListener('astro:page-load', initFilters);
   initFilters();
+
+  // ===== Preview en vídeo de los proyectos =====
+  // Bucle de YouTube vía API (sin playlist -> sin botones anterior/siguiente ni pantalla final)
+  if (!(window as any).__ytLoop) {
+    (window as any).__ytLoop = true;
+    window.addEventListener('message', (e: MessageEvent) => {
+      if (typeof e.data !== 'string' || e.data.indexOf('onStateChange') === -1) return;
+      let d: any;
+      try { d = JSON.parse(e.data); } catch (_) { return; }
+      // info === 0 => el vídeo ha terminado: reiniciar
+      if (d && d.event === 'onStateChange' && d.info === 0 && e.source) {
+        (e.source as Window).postMessage('{"event":"command","func":"seekTo","args":[0,true]}', '*');
+        (e.source as Window).postMessage('{"event":"command","func":"playVideo","args":[]}', '*');
+      }
+    });
+  }
+
+  function initPreviews() {
+    const cards = document.querySelectorAll<HTMLElement>('.project-card');
+    if (!cards.length) return;
+    const isTouch = window.matchMedia('(hover: none)').matches;
+
+    const play = (card: HTMLElement) => {
+      const holder = card.querySelector<HTMLElement>('.preview');
+      if (!holder) return;
+      const timer = (holder as any)._stopTimer;
+      if (timer) { clearTimeout(timer); (holder as any)._stopTimer = null; }
+      if (!holder.dataset.loaded) {
+        const src = holder.dataset.preview;
+        if (!src) return;
+        const isYT = holder.classList.contains('is-youtube');
+        const iframe = document.createElement('iframe');
+        iframe.src = src;
+        iframe.allow = 'autoplay; fullscreen';
+        iframe.tabIndex = -1;
+        iframe.setAttribute('aria-hidden', 'true');
+        // Estilos inline (los estilos scoped de Astro no aplican a elementos inyectados)
+        iframe.style.cssText =
+          'position:absolute;top:0;left:0;width:100%;height:100%;border:0;background:#000;' +
+          'transform-origin:center;transform:scale(' + (isYT ? 1.6 : 1.06) + ');';
+        if (isYT) {
+          // Activa la API para poder reiniciar el vídeo en bucle al terminar
+          iframe.addEventListener('load', () => {
+            try { iframe.contentWindow?.postMessage('{"event":"listening"}', '*'); } catch (_) {}
+          });
+        }
+        holder.appendChild(iframe);
+        holder.dataset.loaded = '1';
+      }
+      // Retraso: deja que el vídeo arranque antes de mostrarlo (oculta el boton central inicial)
+      const delay = holder.classList.contains('is-youtube') ? 650 : 60;
+      (holder as any)._showTimer = setTimeout(() => holder.classList.add('is-playing'), delay);
+    };
+
+    const stop = (card: HTMLElement) => {
+      const holder = card.querySelector<HTMLElement>('.preview');
+      if (!holder) return;
+      if ((holder as any)._showTimer) { clearTimeout((holder as any)._showTimer); (holder as any)._showTimer = null; }
+      holder.classList.remove('is-playing');
+      (holder as any)._stopTimer = setTimeout(() => {
+        const f = holder.querySelector('iframe');
+        if (f) f.remove();
+        holder.dataset.loaded = '';
+        (holder as any)._stopTimer = null;
+      }, 600);
+    };
+
+    if (!isTouch) {
+      cards.forEach(card => {
+        if ((card as any)._previewBound) return;
+        (card as any)._previewBound = true;
+        card.addEventListener('mouseenter', () => play(card));
+        card.addEventListener('mouseleave', () => stop(card));
+      });
+    } else {
+      // Móvil: reproduce la tarjeta más visible en pantalla
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting && e.intersectionRatio >= 0.65) play(e.target as HTMLElement);
+          else stop(e.target as HTMLElement);
+        });
+      }, { threshold: [0, 0.65, 1] });
+      cards.forEach(card => {
+        if ((card as any)._previewBound) return;
+        (card as any)._previewBound = true;
+        io.observe(card);
+      });
+    }
+  }
+
+  document.addEventListener('astro:page-load', initPreviews);
+  initPreviews();
 </script>
