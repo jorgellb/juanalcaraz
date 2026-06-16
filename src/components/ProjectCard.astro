@@ -201,9 +201,16 @@ const isYouTube = videoUrl.includes('youtube') || videoUrl.includes('youtu.be');
     transform-origin: center;
   }
 
-  /* YouTube: ampliamos mucho mas para recortar titulo (arriba) y controles (abajo) */
-  .preview.is-youtube iframe {
-    transform: scale(1.9);
+  /* YouTube: en vez de ampliar, tapamos con bandas el titulo (arriba) y el logo (abajo) */
+  .preview.is-youtube::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    background:
+      linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.92) 9%, transparent 22%),
+      linear-gradient(to top, #000 0%, rgba(0,0,0,0.82) 7%, transparent 18%);
   }
 
   .overlay-content {
