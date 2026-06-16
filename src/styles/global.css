@@ -126,17 +126,17 @@ h1, h2, h3, .h-display {
   color: rgba(255, 255, 255, 0.4);
 }
 .eh-accent {
-  font-family: var(--font-magic);
-  font-style: italic;
+  font-family: var(--font-alt);
   font-weight: 400;
-  font-size: clamp(1.1rem, 2.6vw, 1.7rem);
-  color: rgba(255, 255, 255, 0.62);
-  margin-top: 1.6rem;
-  letter-spacing: 0.01em;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4em;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 1.8rem;
 }
 @media (max-width: 768px) {
   .eh-top { gap: 1rem; margin-bottom: 1.2rem; }
-  .eh-accent { margin-top: 1rem; font-size: 1.05rem; }
+  .eh-accent { margin-top: 1.2rem; font-size: 0.72rem; letter-spacing: 0.3em; }
 }
 
 /* ===== Transición cinematográfica entre páginas (fundido a negro) ===== */

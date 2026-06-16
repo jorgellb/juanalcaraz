@@ -280,9 +280,8 @@ const navItems = [
     line-height: 1.1;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    /* Letras huecas (solo contorno) */
-    color: transparent;
-    -webkit-text-stroke: 1.5px rgba(255,255,255,0.35);
+    /* Letras rellenas (solidas) */
+    color: rgba(255,255,255,0.35);
     transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
   }
 
@@ -302,7 +301,7 @@ const navItems = [
   }
 
   .nav-link:hover .nav-label {
-    -webkit-text-stroke-color: rgba(255,255,255,0.95);
+    color: #fff;
     transform: scale(1.05);
   }
 
