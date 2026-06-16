@@ -141,8 +141,6 @@ const schemas = [
   
   <body>
     <div class="spotlight" id="spotlight"></div>
-    <div class="cursor-dot"></div>
-    <div class="cursor-outline"></div>
 
     <!-- Grano de película 35 mm (ruido real por fotograma) -->
     <canvas class="film-grain" aria-hidden="true" transition:persist></canvas>
@@ -170,31 +168,6 @@ const schemas = [
         transition: opacity 1.5s cubic-bezier(0.7, 0, 0.3, 1), transform 1.5s cubic-bezier(0.7, 0, 0.3, 1), filter 1.5s ease;
       }
 
-      .cursor-dot, .cursor-outline {
-        pointer-events: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        transform: translate(-50%, -50%);
-        border-radius: 50%;
-        z-index: 9999;
-        transition: opacity 0.5s ease;
-      }
-
-      .cursor-dot {
-        width: 4px;
-        height: 4px;
-        background-color: #fff;
-        box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-      }
-
-      .cursor-outline {
-        width: 40px;
-        height: 40px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
-      }
-
       /* Grano de película 35 mm */
       .film-grain {
         position: fixed;
@@ -208,7 +181,7 @@ const schemas = [
       }
 
       @media (max-width: 768px) {
-        .cursor-dot, .cursor-outline, .spotlight { display: none; }
+        .spotlight { display: none; }
       }
 
       @media (prefers-reduced-motion: reduce) {
@@ -218,25 +191,11 @@ const schemas = [
 
     <script is:inline>
       (function() {
-        // Optimized Mouse Tracking
-        const dot = document.querySelector('.cursor-dot');
-        const outline = document.querySelector('.cursor-outline');
-        
+        // Seguimiento del ratón para el spotlight ambiental
         window.addEventListener('mousemove', (e) => {
           const { clientX, clientY } = e;
           document.documentElement.style.setProperty('--mouse-x', `${clientX}px`);
           document.documentElement.style.setProperty('--mouse-y', `${clientY}px`);
-          
-          if (dot) {
-            dot.style.left = `${clientX}px`;
-            dot.style.top = `${clientY}px`;
-          }
-          if (outline) {
-            outline.animate({
-              left: `${clientX}px`,
-              top: `${clientY}px`
-            }, { duration: 400, fill: "forwards", easing: "ease-out" });
-          }
         });
 
         // Instant activation for page swaps (View Transitions)
