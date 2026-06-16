@@ -405,8 +405,8 @@ const itemListLd = {
         holder.appendChild(iframe);
         holder.dataset.loaded = '1';
       }
-      // Retraso: deja que el vídeo arranque antes de mostrarlo (oculta el boton central inicial)
-      const delay = holder.classList.contains('is-youtube') ? 650 : 60;
+      // Retraso: arranca el vídeo oculto y lo muestra cuando YouTube ya ha ocultado su título/UI
+      const delay = holder.classList.contains('is-youtube') ? 2200 : 60;
       (holder as any)._showTimer = setTimeout(() => holder.classList.add('is-playing'), delay);
     };
 
