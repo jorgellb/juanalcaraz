@@ -203,7 +203,7 @@ const schemas = [
         height: 100%;
         pointer-events: none;
         z-index: 9994;
-        opacity: 0.85;
+        opacity: 0.65;
         mix-blend-mode: overlay;
       }
 
@@ -281,7 +281,7 @@ const schemas = [
           for (let i = 0; i < data.length; i += 4) {
             const v = (Math.random() * 255) | 0;
             data[i] = data[i + 1] = data[i + 2] = v;
-            data[i + 3] = 45; // intensidad del grano
+            data[i + 3] = 33; // intensidad del grano
           }
           offCtx.putImageData(img, 0, 0);
           pattern = ctx.createPattern(off, 'repeat');
