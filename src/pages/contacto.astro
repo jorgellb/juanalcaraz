@@ -64,9 +64,9 @@ const pageDescription = 'Contacta con Juan Alcaraz, cineasta y director para nue
   .hero-title {
     font-family: var(--font-display);
     font-size: clamp(4rem, 15vw, 10rem);
-    line-height: 1;
+    line-height: 0.8;
     margin: 0;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.05em;
     /* Letras huecas (solo contorno) */
     color: transparent;
     -webkit-text-stroke: 1.5px rgba(255,255,255,0.9);
@@ -145,13 +145,13 @@ const pageDescription = 'Contacta con Juan Alcaraz, cineasta y director para nue
   @media (max-width: 1024px) {
     .contact-section { padding: 1.5rem 0 8rem; }
     .info-container { gap: 4rem; }
-    .hero-title { font-size: 5rem; }
   }
 
   @media (max-width: 768px) {
     .contact-section { padding: 1rem 0 6rem; }
+    .contact-hero { padding-top: 10rem; }
     .hero-tag { font-size: 0.7rem; letter-spacing: 0.5em; }
-    .hero-title { font-size: 3.5rem; }
+    .hero-title { font-size: 4rem; }
     .info-link { 
       font-size: 1.1rem; /* Smaller to avoid overflow */
       word-break: break-all;

@@ -423,34 +423,14 @@ const itemListLd = {
       }, 600);
     };
 
-    if (!isTouch) {
-      cards.forEach(card => {
-        if ((card as any)._previewBound) return;
-        (card as any)._previewBound = true;
-        card.addEventListener('mouseenter', () => play(card));
-        card.addEventListener('mouseleave', () => stop(card));
-      });
-    } else {
-      // Móvil: reproduce SOLO la tarjeta más visible (una a la vez)
-      const ratios = new Map<Element, number>();
-      const io = new IntersectionObserver((entries) => {
-        entries.forEach(e => ratios.set(e.target, e.isIntersecting ? e.intersectionRatio : 0));
-        let best: HTMLElement | null = null;
-        let bestR = 0;
-        ratios.forEach((r, el) => {
-          if (r > bestR) { bestR = r; best = el as HTMLElement; }
-        });
-        cards.forEach(card => {
-          if (card === best && bestR >= 0.55) play(card);
-          else stop(card);
-        });
-      }, { threshold: [0, 0.25, 0.5, 0.75, 1] });
-      cards.forEach(card => {
-        if ((card as any)._previewBound) return;
-        (card as any)._previewBound = true;
-        io.observe(card);
-      });
-    }
+    // Solo en escritorio (con hover). En móvil/táctil no se previsualiza.
+    if (isTouch) return;
+    cards.forEach(card => {
+      if ((card as any)._previewBound) return;
+      (card as any)._previewBound = true;
+      card.addEventListener('mouseenter', () => play(card));
+      card.addEventListener('mouseleave', () => stop(card));
+    });
   }
 
   document.addEventListener('astro:page-load', initPreviews);

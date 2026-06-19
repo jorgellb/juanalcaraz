@@ -115,10 +115,10 @@ const profilePageLd = {
 
   .hero-title {
     font-family: var(--font-display);
-    font-size: clamp(3rem, 15vw, 12rem);
-    line-height: 0.85;
+    font-size: clamp(4rem, 15vw, 10rem);
+    line-height: 0.8;
     margin: 0;
-    letter-spacing: -0.02em;
+    letter-spacing: 0.05em;
     /* Letras huecas (solo contorno) */
     color: transparent;
     -webkit-text-stroke: 1.5px rgba(255,255,255,0.9);
@@ -232,7 +232,7 @@ const profilePageLd = {
     font-size: clamp(6rem, 17vw, 13rem);
     line-height: 1;
     color: transparent;
-    -webkit-text-stroke: 1px rgba(255,255,255,0.06);
+    -webkit-text-stroke: 1px rgba(255,255,255,0.14);
     white-space: nowrap;
     z-index: -1;
     pointer-events: none;
@@ -361,7 +361,8 @@ const profilePageLd = {
 
   @media (max-width: 768px) {
     .section-padding { padding: 4rem 0; }
-    .hero-title { font-size: 3.5rem; }
+    .bio-hero { padding-top: 10rem; }
+    .hero-title { font-size: 4rem; }
     .projects-container { padding-left: 3rem; }
     .projects-container::before { left: 1rem; }
     .timeline-film-item {
