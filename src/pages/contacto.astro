@@ -22,29 +22,97 @@ const pageDescription = 'Contacta con Juan Alcaraz, cineasta y director para nue
 
   <section class="contact-section">
     <div class="container">
-      <div class="contact-center-wrap">
-        <div class="info-container">
-          <div class="info-block magic-reveal">
-            <h3 class="info-label">EMAIL DIRECTO</h3>
-            <a href="mailto:juanalcarazcine@gmail.com" class="info-link">JUANALCARAZCINE@GMAIL.COM</a>
+      <div class="contact-grid">
+        <form class="contact-form magic-reveal" id="contact-form" novalidate>
+          <div class="cf-field">
+            <input type="text" id="cf-name" name="name" required placeholder=" " autocomplete="name" />
+            <label for="cf-name">Nombre</label>
+            <span class="cf-line"></span>
           </div>
+          <div class="cf-field">
+            <input type="email" id="cf-email" name="email" required placeholder=" " autocomplete="email" />
+            <label for="cf-email">Email</label>
+            <span class="cf-line"></span>
+          </div>
+          <div class="cf-field">
+            <textarea id="cf-message" name="message" required placeholder=" " rows="4"></textarea>
+            <label for="cf-message">Cuéntame tu proyecto</label>
+            <span class="cf-line"></span>
+          </div>
+          <div class="cf-actions">
+            <button type="submit" class="cf-btn cf-btn-send">Enviar email</button>
+            <button type="button" class="cf-btn cf-btn-wa" id="cf-wa">WhatsApp</button>
+          </div>
+          <p class="cf-status" id="cf-status" role="status" aria-live="polite"></p>
+        </form>
 
-          <div class="info-block magic-reveal">
-            <h3 class="info-label">TELÉFONO</h3>
-            <a href="tel:+34663384218" class="info-link">+34 663 384 218</a>
+        <aside class="contact-direct magic-reveal">
+          <div class="cd-block">
+            <h3 class="cd-label">Email</h3>
+            <a href="mailto:juanalcarazcine@gmail.com" class="cd-link">juanalcarazcine@gmail.com</a>
           </div>
-
-          <div class="info-block magic-reveal">
-            <h3 class="info-label">SOCIAL</h3>
-            <div class="social-links">
-              <a href="https://instagram.com/juanalcarazcine" target="_blank" class="info-link">INSTAGRAM</a>
-            </div>
+          <div class="cd-block">
+            <h3 class="cd-label">Teléfono</h3>
+            <a href="tel:+34663384218" class="cd-link">+34 663 384 218</a>
           </div>
-        </div>
+          <div class="cd-block">
+            <h3 class="cd-label">Social</h3>
+            <a href="https://instagram.com/juanalcarazcine" target="_blank" rel="noopener" class="cd-link">Instagram</a>
+          </div>
+        </aside>
       </div>
     </div>
   </section>
 </Layout>
+
+<script>
+  function initContactForm() {
+    const form = document.getElementById('contact-form') as HTMLFormElement | null;
+    if (!form || form.dataset.init) return;
+    form.dataset.init = '1';
+    const status = document.getElementById('cf-status');
+    const waBtn = document.getElementById('cf-wa');
+    const val = (id: string) => ((document.getElementById(id) as HTMLInputElement | null)?.value || '').trim();
+    const setStatus = (msg: string, cls = '') => {
+      if (status) { status.textContent = msg; status.className = 'cf-status' + (cls ? ' ' + cls : ''); }
+    };
+
+    waBtn?.addEventListener('click', () => {
+      const name = val('cf-name'), email = val('cf-email'), msg = val('cf-message');
+      const text = `Hola Juan, soy ${name || ''}${email ? ' (' + email + ')' : ''}.\n\n${msg}`;
+      window.open('https://wa.me/34663384218?text=' + encodeURIComponent(text), '_blank');
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = val('cf-name'), email = val('cf-email'), message = val('cf-message');
+      if (!name || !email || !message) { setStatus('Completa todos los campos.', 'err'); return; }
+      const btn = form.querySelector('.cf-btn-send') as HTMLButtonElement;
+      btn.disabled = true;
+      setStatus('Enviando…');
+      try {
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, message }),
+        });
+        if (res.ok) {
+          setStatus('¡Mensaje enviado! Te responderé pronto.', 'ok');
+          form.reset();
+        } else {
+          const d = await res.json().catch(() => ({} as any));
+          setStatus(d.error || 'No se pudo enviar. Prueba por WhatsApp.', 'err');
+        }
+      } catch (_) {
+        setStatus('Error de conexión. Prueba por WhatsApp.', 'err');
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  }
+  document.addEventListener('astro:page-load', initContactForm);
+  initContactForm();
+</script>
 
 <style>
   .contact-hero {
@@ -86,65 +154,147 @@ const pageDescription = 'Contacta con Juan Alcaraz, cineasta y director para nue
     background: #000;
   }
 
-  .contact-center-wrap {
-    max-width: 800px;
-    margin: 0 auto;
-    text-align: center;
-    width: 100%;
-  }
-
-  .info-container {
-    display: flex;
-    flex-direction: column;
+  /* ===== Formulario de contacto (minimal/cine) ===== */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1.45fr 1fr;
     gap: 6rem;
-    align-items: center; /* Center children */
-    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    align-items: start;
   }
 
-  .info-block {
+  .contact-form {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-    align-items: center;
-    width: 100%;
+    gap: 2.8rem;
   }
 
-  .info-label {
+  .cf-field {
+    position: relative;
+  }
+
+  .cf-field input,
+  .cf-field textarea {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+    padding: 0.85rem 0;
+    color: #fff;
+    font-family: var(--font-main);
+    font-size: 1.05rem;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    outline: none;
+    resize: none;
+  }
+
+  .cf-field textarea { line-height: 1.6; }
+
+  .cf-field label {
+    position: absolute;
+    left: 0;
+    top: 0.85rem;
+    color: rgba(255, 255, 255, 0.4);
+    font-family: var(--font-alt);
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    pointer-events: none;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .cf-field input:focus ~ label,
+  .cf-field input:not(:placeholder-shown) ~ label,
+  .cf-field textarea:focus ~ label,
+  .cf-field textarea:not(:placeholder-shown) ~ label {
+    top: -0.95rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .cf-line {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 1px;
+    width: 100%;
+    background: #fff;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .cf-field input:focus ~ .cf-line,
+  .cf-field textarea:focus ~ .cf-line { transform: scaleX(1); }
+
+  .cf-actions {
+    display: flex;
+    gap: 1.2rem;
+    margin-top: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .cf-btn {
     font-family: var(--font-alt);
     font-size: 0.7rem;
-    letter-spacing: 0.5em;
-    color: rgba(255,255,255,0.25);
-    margin: 0;
-    text-align: center;
-  }
-
-  .info-link {
-    font-family: var(--font-display);
-    font-size: clamp(1.6rem, 5vw, 2.8rem);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    padding: 1.1rem 2.6rem;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: transparent;
     color: #fff;
-    text-decoration: none;
-    transition: all 0.4s ease;
-    font-weight: 400;
-    letter-spacing: 0.08em;
-    display: inline-block;
-    text-align: center;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .info-link:hover {
-    opacity: 0.6;
-    letter-spacing: 0.1em;
-  }
+  .cf-btn-send { background: #fff; color: #000; border-color: #fff; }
+  .cf-btn-send:hover { background: transparent; color: #fff; }
+  .cf-btn-wa:hover { border-color: #fff; background: rgba(255, 255, 255, 0.06); }
+  .cf-btn:disabled { opacity: 0.5; cursor: default; }
 
-  .social-links {
+  .cf-status {
+    font-family: var(--font-alt);
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    color: rgba(255, 255, 255, 0.6);
+    min-height: 1.2em;
+    margin: 0;
+  }
+  .cf-status.ok { color: #8fd6a4; }
+  .cf-status.err { color: #e58a8a; }
+
+  /* Contacto directo */
+  .contact-direct {
     display: flex;
-    gap: 3rem;
-    justify-content: center;
-    width: 100%;
+    flex-direction: column;
+    gap: 2.6rem;
+    padding-top: 0.4rem;
   }
+  .cd-block { display: flex; flex-direction: column; gap: 0.6rem; }
+  .cd-label {
+    font-family: var(--font-alt);
+    font-size: 0.62rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.3);
+    margin: 0;
+  }
+  .cd-link {
+    font-family: var(--font-main);
+    font-size: 1.05rem;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    color: rgba(255, 255, 255, 0.85);
+    transition: color 0.3s ease;
+  }
+  .cd-link:hover { color: #fff; }
 
   @media (max-width: 1024px) {
     .contact-section { padding: 1.5rem 0 8rem; }
-    .info-container { gap: 4rem; }
+    .contact-grid { gap: 4rem; }
   }
 
   @media (max-width: 768px) {
@@ -152,13 +302,10 @@ const pageDescription = 'Contacta con Juan Alcaraz, cineasta y director para nue
     .contact-hero { padding-top: 10rem; }
     .hero-tag { font-size: 0.7rem; letter-spacing: 0.5em; }
     .hero-title { font-size: 4rem; }
-    .info-link { 
-      font-size: 1.1rem; /* Smaller to avoid overflow */
-      word-break: break-all;
-      max-width: 90vw;
+    .contact-grid {
+      grid-template-columns: 1fr;
+      gap: 3.5rem;
     }
-    .social-links {
-      gap: 2rem;
-    }
+    .cd-link { word-break: break-word; }
   }
 </style>
