@@ -431,13 +431,20 @@ const itemListLd = {
         card.addEventListener('mouseleave', () => stop(card));
       });
     } else {
-      // Móvil: reproduce la tarjeta más visible en pantalla
+      // Móvil: reproduce SOLO la tarjeta más visible (una a la vez)
+      const ratios = new Map<Element, number>();
       const io = new IntersectionObserver((entries) => {
-        entries.forEach(e => {
-          if (e.isIntersecting && e.intersectionRatio >= 0.65) play(e.target as HTMLElement);
-          else stop(e.target as HTMLElement);
+        entries.forEach(e => ratios.set(e.target, e.isIntersecting ? e.intersectionRatio : 0));
+        let best: HTMLElement | null = null;
+        let bestR = 0;
+        ratios.forEach((r, el) => {
+          if (r > bestR) { bestR = r; best = el as HTMLElement; }
         });
-      }, { threshold: [0, 0.65, 1] });
+        cards.forEach(card => {
+          if (card === best && bestR >= 0.55) play(card);
+          else stop(card);
+        });
+      }, { threshold: [0, 0.25, 0.5, 0.75, 1] });
       cards.forEach(card => {
         if ((card as any)._previewBound) return;
         (card as any)._previewBound = true;

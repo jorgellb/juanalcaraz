@@ -7,11 +7,7 @@ const pageDescription = 'Contacta con Juan Alcaraz, cineasta y director para nue
 
 <Layout title={pageTitle} description={pageDescription}>
   <section class="contact-hero">
-    <div class="hero-bg">
-      <div class="hero-overlay"></div>
-      <div class="hero-flare"></div>
-    </div>
-    <div class="container hero-container">
+    <div class="container">
       <div class="hero-content">
         <div class="eh-top magic-reveal">
           <span class="eh-index">03</span>
@@ -52,40 +48,8 @@ const pageDescription = 'Contacta con Juan Alcaraz, cineasta y director para nue
 
 <style>
   .contact-hero {
-    height: 60vh;
-    position: relative;
-    display: flex;
-    align-items: flex-start;
+    padding: 15rem 0 5rem;
     background: #000;
-    overflow: hidden;
-  }
-
-  .hero-container {
-    padding-top: 13vh;
-  }
-
-  .hero-bg {
-    position: absolute;
-    inset: 0;
-    background: url('/contacto.jpg') no-repeat center 88% / cover;
-    opacity: 0.5;
-    transform: scale(1.05);
-  }
-
-  .hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom,
-      rgba(0,0,0,0.8) 0%,
-      rgba(0,0,0,0.25) 22%,
-      rgba(0,0,0,0.55) 58%,
-      rgba(0,0,0,1) 90%
-    );
-  }
-
-  .hero-container {
-    position: relative;
-    z-index: 2;
   }
 
   .hero-tag {
