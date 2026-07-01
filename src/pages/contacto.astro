@@ -22,97 +22,26 @@ const pageDescription = 'Contacta con Juan Alcaraz, cineasta y director para nue
 
   <section class="contact-section">
     <div class="container">
-      <div class="contact-grid">
-        <form class="contact-form magic-reveal" id="contact-form" novalidate>
-          <div class="cf-field">
-            <input type="text" id="cf-name" name="name" required placeholder=" " autocomplete="name" />
-            <label for="cf-name">Nombre</label>
-            <span class="cf-line"></span>
-          </div>
-          <div class="cf-field">
-            <input type="email" id="cf-email" name="email" required placeholder=" " autocomplete="email" />
-            <label for="cf-email">Email</label>
-            <span class="cf-line"></span>
-          </div>
-          <div class="cf-field">
-            <textarea id="cf-message" name="message" required placeholder=" " rows="4"></textarea>
-            <label for="cf-message">Cuéntame tu proyecto</label>
-            <span class="cf-line"></span>
-          </div>
-          <div class="cf-actions">
-            <button type="submit" class="cf-btn cf-btn-send">Enviar email</button>
-            <button type="button" class="cf-btn cf-btn-wa" id="cf-wa">WhatsApp</button>
-          </div>
-          <p class="cf-status" id="cf-status" role="status" aria-live="polite"></p>
-        </form>
-
-        <aside class="contact-direct magic-reveal">
-          <div class="cd-block">
-            <h3 class="cd-label">Email</h3>
-            <a href="mailto:juanalcarazcine@gmail.com" class="cd-link">juanalcarazcine@gmail.com</a>
-          </div>
-          <div class="cd-block">
-            <h3 class="cd-label">Teléfono</h3>
-            <a href="tel:+34663384218" class="cd-link">+34 663 384 218</a>
-          </div>
-          <div class="cd-block">
-            <h3 class="cd-label">Social</h3>
-            <a href="https://instagram.com/juanalcarazcine" target="_blank" rel="noopener" class="cd-link">Instagram</a>
-          </div>
-        </aside>
+      <div class="contact-list">
+        <a href="mailto:juanalcarazcine@gmail.com" class="contact-row magic-reveal">
+          <span class="cr-label">Email</span>
+          <span class="cr-value">juanalcarazcine@gmail.com</span>
+          <span class="cr-arrow" aria-hidden="true">↗</span>
+        </a>
+        <a href="tel:+34663384218" class="contact-row magic-reveal">
+          <span class="cr-label">Teléfono</span>
+          <span class="cr-value">+34 663 384 218</span>
+          <span class="cr-arrow" aria-hidden="true">↗</span>
+        </a>
+        <a href="https://instagram.com/juanalcarazcine" target="_blank" rel="noopener" class="contact-row magic-reveal">
+          <span class="cr-label">Instagram</span>
+          <span class="cr-value">@juanalcarazcine</span>
+          <span class="cr-arrow" aria-hidden="true">↗</span>
+        </a>
       </div>
     </div>
   </section>
 </Layout>
-
-<script>
-  function initContactForm() {
-    const form = document.getElementById('contact-form') as HTMLFormElement | null;
-    if (!form || form.dataset.init) return;
-    form.dataset.init = '1';
-    const status = document.getElementById('cf-status');
-    const waBtn = document.getElementById('cf-wa');
-    const val = (id: string) => ((document.getElementById(id) as HTMLInputElement | null)?.value || '').trim();
-    const setStatus = (msg: string, cls = '') => {
-      if (status) { status.textContent = msg; status.className = 'cf-status' + (cls ? ' ' + cls : ''); }
-    };
-
-    waBtn?.addEventListener('click', () => {
-      const name = val('cf-name'), email = val('cf-email'), msg = val('cf-message');
-      const text = `Hola Juan, soy ${name || ''}${email ? ' (' + email + ')' : ''}.\n\n${msg}`;
-      window.open('https://wa.me/34663384218?text=' + encodeURIComponent(text), '_blank');
-    });
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const name = val('cf-name'), email = val('cf-email'), message = val('cf-message');
-      if (!name || !email || !message) { setStatus('Completa todos los campos.', 'err'); return; }
-      const btn = form.querySelector('.cf-btn-send') as HTMLButtonElement;
-      btn.disabled = true;
-      setStatus('Enviando…');
-      try {
-        const res = await fetch('/api/contact', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, message }),
-        });
-        if (res.ok) {
-          setStatus('¡Mensaje enviado! Te responderé pronto.', 'ok');
-          form.reset();
-        } else {
-          const d = await res.json().catch(() => ({} as any));
-          setStatus(d.error || 'No se pudo enviar. Prueba por WhatsApp.', 'err');
-        }
-      } catch (_) {
-        setStatus('Error de conexión. Prueba por WhatsApp.', 'err');
-      } finally {
-        btn.disabled = false;
-      }
-    });
-  }
-  document.addEventListener('astro:page-load', initContactForm);
-  initContactForm();
-</script>
 
 <style>
   .contact-hero {
@@ -154,147 +83,67 @@ const pageDescription = 'Contacta con Juan Alcaraz, cineasta y director para nue
     background: #000;
   }
 
-  /* ===== Formulario de contacto (minimal/cine) ===== */
-  .contact-grid {
-    display: grid;
-    grid-template-columns: 1.45fr 1fr;
-    gap: 6rem;
-    max-width: 1100px;
+  /* ===== Lista de contacto (elegante) ===== */
+  .contact-list {
+    max-width: 980px;
     margin: 0 auto;
-    align-items: start;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  .contact-form {
-    display: flex;
-    flex-direction: column;
-    gap: 2.8rem;
-  }
-
-  .cf-field {
+  .contact-row {
+    display: grid;
+    grid-template-columns: 190px 1fr auto;
+    align-items: center;
+    gap: 2rem;
+    padding: 2.6rem 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    text-decoration: none;
     position: relative;
+    transition: padding 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+                background 0.55s ease;
   }
 
-  .cf-field input,
-  .cf-field textarea {
-    width: 100%;
-    background: transparent;
-    border: 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
-    padding: 0.85rem 0;
-    color: #fff;
-    font-family: var(--font-main);
-    font-size: 1.05rem;
-    font-weight: 300;
-    letter-spacing: 0.02em;
-    outline: none;
-    resize: none;
+  .contact-row:hover {
+    padding-left: 2rem;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.04), transparent 70%);
   }
 
-  .cf-field textarea { line-height: 1.6; }
-
-  .cf-field label {
-    position: absolute;
-    left: 0;
-    top: 0.85rem;
-    color: rgba(255, 255, 255, 0.4);
-    font-family: var(--font-alt);
-    font-size: 0.95rem;
-    letter-spacing: 0.04em;
-    pointer-events: none;
-    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .cf-field input:focus ~ label,
-  .cf-field input:not(:placeholder-shown) ~ label,
-  .cf-field textarea:focus ~ label,
-  .cf-field textarea:not(:placeholder-shown) ~ label {
-    top: -0.95rem;
-    font-size: 0.62rem;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.45);
-  }
-
-  .cf-line {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    height: 1px;
-    width: 100%;
-    background: #fff;
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .cf-field input:focus ~ .cf-line,
-  .cf-field textarea:focus ~ .cf-line { transform: scaleX(1); }
-
-  .cf-actions {
-    display: flex;
-    gap: 1.2rem;
-    margin-top: 0.6rem;
-    flex-wrap: wrap;
-  }
-
-  .cf-btn {
-    font-family: var(--font-alt);
-    font-size: 0.7rem;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    padding: 1.1rem 2.6rem;
-    cursor: pointer;
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    background: transparent;
-    color: #fff;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .cf-btn-send { background: #fff; color: #000; border-color: #fff; }
-  .cf-btn-send:hover { background: transparent; color: #fff; }
-  .cf-btn-wa:hover { border-color: #fff; background: rgba(255, 255, 255, 0.06); }
-  .cf-btn:disabled { opacity: 0.5; cursor: default; }
-
-  .cf-status {
-    font-family: var(--font-alt);
-    font-size: 0.8rem;
-    letter-spacing: 0.04em;
-    color: rgba(255, 255, 255, 0.6);
-    min-height: 1.2em;
-    margin: 0;
-  }
-  .cf-status.ok { color: #8fd6a4; }
-  .cf-status.err { color: #e58a8a; }
-
-  /* Contacto directo */
-  .contact-direct {
-    display: flex;
-    flex-direction: column;
-    gap: 2.6rem;
-    padding-top: 0.4rem;
-  }
-  .cd-block { display: flex; flex-direction: column; gap: 0.6rem; }
-  .cd-label {
+  .cr-label {
     font-family: var(--font-alt);
     font-size: 0.62rem;
     letter-spacing: 0.4em;
     text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.35);
+    transition: color 0.4s ease;
+  }
+  .contact-row:hover .cr-label { color: rgba(255, 255, 255, 0.6); }
+
+  .cr-value {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 4vw, 2.6rem);
+    letter-spacing: 0.04em;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.9);
+    transition: color 0.4s ease;
+  }
+  .contact-row:hover .cr-value { color: #fff; }
+
+  .cr-arrow {
+    font-family: var(--font-alt);
+    font-size: 1.4rem;
     color: rgba(255, 255, 255, 0.3);
-    margin: 0;
+    opacity: 0;
+    transform: translate(-8px, 8px);
+    transition: all 0.55s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .cd-link {
-    font-family: var(--font-main);
-    font-size: 1.05rem;
-    font-weight: 300;
-    letter-spacing: 0.02em;
-    color: rgba(255, 255, 255, 0.85);
-    transition: color 0.3s ease;
+  .contact-row:hover .cr-arrow {
+    opacity: 1;
+    transform: translate(0, 0);
+    color: #fff;
   }
-  .cd-link:hover { color: #fff; }
 
   @media (max-width: 1024px) {
     .contact-section { padding: 1.5rem 0 8rem; }
-    .contact-grid { gap: 4rem; }
   }
 
   @media (max-width: 768px) {
@@ -302,10 +151,13 @@ const pageDescription = 'Contacta con Juan Alcaraz, cineasta y director para nue
     .contact-hero { padding-top: 10rem; }
     .hero-tag { font-size: 0.7rem; letter-spacing: 0.5em; }
     .hero-title { font-size: 4rem; }
-    .contact-grid {
-      grid-template-columns: 1fr;
-      gap: 3.5rem;
+    .contact-row {
+      grid-template-columns: 1fr auto;
+      gap: 0.4rem 1rem;
+      padding: 1.8rem 0.25rem;
     }
-    .cd-link { word-break: break-word; }
+    .cr-label { grid-column: 1 / -1; }
+    .cr-value { word-break: break-word; }
+    .contact-row:hover { padding-left: 0.75rem; }
   }
 </style>
