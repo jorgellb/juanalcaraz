@@ -61,12 +61,7 @@ const profilePageLd = {
         {sortedFilmography.map((yearGroup) => (
           <div class="year-block magic-reveal">
             <div class="year-header">
-              <span class="year-label">
-                <svg class="year-ghost" viewBox="0 0 400 140" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-                  <text x="0" y="112">{yearGroup.data.year}</text>
-                </svg>
-                {yearGroup.data.year}
-              </span>
+              <span class="year-label" data-year={yearGroup.data.year}>{yearGroup.data.year}</span>
               <span class="year-line"></span>
             </div>
 
@@ -124,9 +119,7 @@ const profilePageLd = {
     line-height: 0.8;
     margin: 0;
     letter-spacing: 0.05em;
-    /* Letras huecas (solo contorno) */
-    color: transparent;
-    -webkit-text-stroke: 1.5px rgba(255,255,255,0.9);
+    color: #fff;
   }
 
   .hero-line {
@@ -162,15 +155,6 @@ const profilePageLd = {
     height: 100%;
     object-fit: cover;
     filter: grayscale(0.2) contrast(1.1);
-    /* Bordes difuminados en los 4 lados para que no se note el corte */
-    -webkit-mask-image:
-      linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%),
-      linear-gradient(to bottom, transparent 0%, #000 10%, #000 90%, transparent 100%);
-    -webkit-mask-composite: source-in;
-    mask-image:
-      linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%),
-      linear-gradient(to bottom, transparent 0%, #000 10%, #000 90%, transparent 100%);
-    mask-composite: intersect;
   }
 
   .section-label {
@@ -188,6 +172,8 @@ const profilePageLd = {
     font-weight: 300;
     margin-bottom: 2.5rem;
     color: rgba(255,255,255,0.85);
+    text-align: justify;
+    hyphens: auto;
   }
 
   /* Timeline */
@@ -227,28 +213,20 @@ const profilePageLd = {
     -webkit-text-fill-color: transparent;
   }
 
-  /* Numero fantasma gigante con contorno punteado (SVG) */
-  .year-ghost {
+  /* Numero fantasma gigante con contorno solido */
+  .year-label::before {
+    content: attr(data-year);
     position: absolute;
-    left: -1.5rem;
+    left: -0.6rem;
     top: 50%;
     transform: translateY(-50%);
-    width: clamp(24rem, 58vw, 46rem);
-    height: auto;
-    overflow: visible;
+    font-size: clamp(6rem, 17vw, 13rem);
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255,255,255,0.14);
+    white-space: nowrap;
     z-index: -1;
     pointer-events: none;
-  }
-
-  .year-ghost text {
-    font-family: var(--font-display);
-    font-size: 120px;
-    letter-spacing: 6px;
-    fill: none;
-    stroke: rgba(255, 255, 255, 0.22);
-    stroke-width: 1.1;
-    stroke-dasharray: 1 6;
-    stroke-linecap: round;
   }
 
   .year-line {
