@@ -144,6 +144,7 @@
       if (title) title.textContent = projectTitle;
       modal?.classList.add('active');
       document.body.style.overflow = 'hidden';
+      document.body.classList.add('modal-open');
     }
 
     function closeModal() {
@@ -151,6 +152,7 @@
       modal?.classList.remove('active');
       iframe.src = '';
       document.body.style.overflow = '';
+      document.body.classList.remove('modal-open');
     }
 
     triggers.forEach(trigger => {

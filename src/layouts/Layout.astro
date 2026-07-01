@@ -178,6 +178,12 @@ const schemas = [
         z-index: 9994;
         opacity: 0.65;
         mix-blend-mode: overlay;
+        transition: opacity 0.4s ease;
+      }
+
+      /* Al abrir un vídeo, el grano no debe afectarlo */
+      body.modal-open .film-grain {
+        opacity: 0;
       }
 
       @media (max-width: 768px) {
