@@ -10,11 +10,15 @@ import Layout from '../layouts/Layout.astro';
     <h1 class="visually-hidden">Juan Alcaraz — Cineasta y Director Audiovisual en Murcia</h1>
     <div class="video-background">
       <iframe
+        id="hero-video"
         src="https://player.vimeo.com/video/1175433396?background=1&autoplay=1&playsinline=1&color&autopause=0&loop=1&muted=1&title=0&portrait=0&byline=0"
         title="Reel de Juan Alcaraz, cineasta y director audiovisual"
         allow="autoplay; fullscreen"
         allowfullscreen
       ></iframe>
+    </div>
+    <div class="hero-loader" id="hero-loader" aria-hidden="true">
+      <span class="hero-ring"></span>
     </div>
   </section>
 
@@ -49,4 +53,71 @@ import Layout from '../layouts/Layout.astro';
     height: 100%;
     border: none;
   }
+
+  /* Indicador de carga (se funde cuando el vídeo arranca) */
+  .hero-loader {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.9s ease;
+    pointer-events: none;
+  }
+
+  .hero-loader.is-hidden {
+    opacity: 0;
+  }
+
+  .hero-ring {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-top-color: rgba(255, 255, 255, 0.8);
+    animation: hero-spin 0.9s linear infinite;
+  }
+
+  @keyframes hero-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-ring { animation: none; }
+  }
 </style>
+
+<script>
+  function initHeroLoader() {
+    const loader = document.getElementById('hero-loader');
+    const iframe = document.getElementById('hero-video') as HTMLIFrameElement | null;
+    if (!loader || !iframe || (loader as any)._init) return;
+    (loader as any)._init = true;
+
+    let done = false;
+    const hide = () => { if (done) return; done = true; loader.classList.add('is-hidden'); };
+
+    // Ocultar cuando Vimeo empieza a reproducir
+    window.addEventListener('message', (e: MessageEvent) => {
+      if (typeof e.origin !== 'string' || e.origin.indexOf('vimeo') === -1) return;
+      let d: any;
+      try { d = JSON.parse(e.data); } catch (_) { return; }
+      if (d && (d.event === 'playing' || d.event === 'play')) hide();
+    });
+
+    iframe.addEventListener('load', () => {
+      try {
+        iframe.contentWindow?.postMessage(JSON.stringify({ method: 'addEventListener', value: 'playing' }), '*');
+        iframe.contentWindow?.postMessage(JSON.stringify({ method: 'addEventListener', value: 'play' }), '*');
+      } catch (_) {}
+    });
+
+    // Fallback: ocultar pase lo que pase
+    setTimeout(hide, 8000);
+  }
+
+  document.addEventListener('astro:page-load', initHeroLoader);
+  initHeroLoader();
+</script>
