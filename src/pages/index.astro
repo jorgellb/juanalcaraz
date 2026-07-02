@@ -89,6 +89,7 @@ import Layout from '../layouts/Layout.astro';
   }
 </style>
 
+<script is:inline src="https://player.vimeo.com/api/player.js"></script>
 <script>
   function initHeroLoader() {
     const loader = document.getElementById('hero-loader');
@@ -99,23 +100,25 @@ import Layout from '../layouts/Layout.astro';
     let done = false;
     const hide = () => { if (done) return; done = true; loader.classList.add('is-hidden'); };
 
-    // Ocultar cuando Vimeo empieza a reproducir
-    window.addEventListener('message', (e: MessageEvent) => {
-      if (typeof e.origin !== 'string' || e.origin.indexOf('vimeo') === -1) return;
-      let d: any;
-      try { d = JSON.parse(e.data); } catch (_) { return; }
-      if (d && (d.event === 'playing' || d.event === 'play')) hide();
-    });
+    // Deteccion fiable con el SDK de Vimeo (con reintento hasta que cargue)
+    let tries = 0;
+    const attach = () => {
+      const Vimeo = (window as any).Vimeo;
+      if (Vimeo && Vimeo.Player) {
+        try {
+          const player = new Vimeo.Player(iframe);
+          player.on('timeupdate', hide); // se dispara solo cuando el video avanza (ya se ve)
+          player.on('playing', hide);
+          player.on('bufferend', hide);
+        } catch (_) {}
+      } else if (tries++ < 20) {
+        setTimeout(attach, 150);
+      }
+    };
+    attach();
 
-    iframe.addEventListener('load', () => {
-      try {
-        iframe.contentWindow?.postMessage(JSON.stringify({ method: 'addEventListener', value: 'playing' }), '*');
-        iframe.contentWindow?.postMessage(JSON.stringify({ method: 'addEventListener', value: 'play' }), '*');
-      } catch (_) {}
-    });
-
-    // Fallback: ocultar pase lo que pase
-    setTimeout(hide, 8000);
+    // Fallback por si el SDK no carga o tarda demasiado
+    setTimeout(hide, 6000);
   }
 
   document.addEventListener('astro:page-load', initHeroLoader);
