@@ -375,13 +375,13 @@ const navItems = [
     color: rgba(255,255,255,0.1);
   }
 
-  /* Hamburger Active Animation */
-  .full-menu.open ~ .header-inner .l1 {
-    transform: translateY(5.5px) rotate(45deg);
+  /* Hamburguesa → X al abrir el menú (el script sincroniza aria-expanded) */
+  .menu-btn[aria-expanded='true'] .l1 {
+    transform: translateY(5.25px) rotate(45deg);
   }
 
-  .full-menu.open ~ .header-inner .l2 {
-    transform: translateY(-5px) rotate(-45deg);
+  .menu-btn[aria-expanded='true'] .l2 {
+    transform: translateY(-5.25px) rotate(-45deg);
   }
 
   /* Ajustes para laptops de 15" (resoluciones entre 1024px y 1600px) */
