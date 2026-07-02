@@ -9,9 +9,9 @@ interface Props {
 const { project, featured = false } = Astro.props;
 const { title, category, videoUrl, thumbnail, year } = project.data;
 
+const FALLBACK_THUMB = 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=1200';
+
 const getThumbUrl = (url: string) => {
-  if (thumbnail) return thumbnail;
-  
   if (url.includes('vimeo')) {
     const id = url.split('/').filter(Boolean).pop();
     return `https://vumbnail.com/${id}.jpg`;
@@ -27,11 +27,12 @@ const getThumbUrl = (url: string) => {
     }
     return `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
   }
-  
-  return 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=1200';
+
+  return FALLBACK_THUMB;
 };
 
-const thumbUrl = getThumbUrl(videoUrl);
+const thumbUrl = thumbnail ?? getThumbUrl(videoUrl);
+const thumbAlt = `${title} (${year}) — ${category.toLowerCase()} de Juan Alcaraz`;
 ---
 
 <article 
@@ -42,12 +43,14 @@ const thumbUrl = getThumbUrl(videoUrl);
 >
   <button class="project-trigger" aria-label={`Ver proyecto ${title}`}>
     <div class="thumbnail">
-      <img 
-        src={thumbUrl} 
-        alt={title} 
-        loading="lazy" 
-        decoding="async" 
-        onerror="this.src='https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=1200'"
+      <img
+        src={thumbUrl}
+        alt={thumbAlt}
+        width="1280"
+        height="720"
+        loading="lazy"
+        decoding="async"
+        onerror={`this.onerror=null;this.src='${FALLBACK_THUMB}'`}
       />
       <div class="overlay">
         <div class="overlay-content">

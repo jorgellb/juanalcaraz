@@ -1,0 +1,87 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const pageTitle = 'Página no encontrada | Juan Alcaraz';
+const pageDescription = 'La página que buscas no existe. Vuelve al inicio para descubrir los proyectos de Juan Alcaraz, cineasta y director audiovisual.';
+---
+
+<Layout title={pageTitle} description={pageDescription} noindex>
+  <section class="notfound-hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="eh-top magic-reveal">
+          <span class="eh-index">404</span>
+          <span class="eh-rule"></span>
+          <span class="eh-eyebrow">Fuera de plano</span>
+        </div>
+        <h1 class="hero-title magic-reveal">CORTEN</h1>
+        <p class="eh-accent magic-reveal">Esta escena no existe</p>
+        <a href="/" class="back-home magic-reveal">
+          <span class="bh-label">Volver al inicio</span>
+          <span class="bh-arrow" aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .notfound-hero {
+    padding: 15rem 0 12rem;
+    background: #000;
+    min-height: 100vh;
+  }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 15vw, 10rem);
+    line-height: 0.8;
+    margin: 0;
+    letter-spacing: 0.05em;
+    color: #fff;
+  }
+
+  .back-home {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-top: 4rem;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+    padding-bottom: 0.5rem;
+    transition: border-color 0.4s ease;
+  }
+
+  .back-home:hover {
+    border-color: #fff;
+  }
+
+  .bh-label {
+    font-family: var(--font-alt);
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.7);
+    transition: color 0.4s ease;
+  }
+
+  .back-home:hover .bh-label {
+    color: #fff;
+  }
+
+  .bh-arrow {
+    font-family: var(--font-alt);
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.4);
+    transition: color 0.4s ease;
+  }
+
+  .back-home:hover .bh-arrow {
+    color: #fff;
+  }
+
+  @media (max-width: 768px) {
+    .notfound-hero { padding-top: 10rem; }
+    .hero-title { font-size: 4rem; }
+  }
+</style>

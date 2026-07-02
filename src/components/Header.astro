@@ -12,13 +12,20 @@ const navItems = [
 <header class="header" id="main-header">
   <div class="header-inner">
     <div class="logo-container">
-      <a href="/" class="logo-link">
-        <h2 class="elementor-heading-title premium-logo">JU<i>A</i>N <i>A</i>LC<i>A</i>R<i>A</i>Z</h2>
+      <a href="/" class="logo-link" aria-label="Juan Alcaraz — Inicio">
+        <p class="elementor-heading-title premium-logo">JU<i>A</i>N <i>A</i>LC<i>A</i>R<i>A</i>Z</p>
       </a>
       <span class="role flicker-slow">CINE<i>A</i>ST<i>A</i></span>
     </div>
 
-    <button class="menu-btn" id="menu-toggle" aria-label="Abrir menú">
+    <button
+      class="menu-btn"
+      id="menu-toggle"
+      type="button"
+      aria-label="Abrir menú"
+      aria-expanded="false"
+      aria-controls="full-menu"
+    >
       <div class="btn-hover-bg"></div>
       <span class="menu-text">EXPLORE</span>
       <div class="hamburger">
@@ -28,7 +35,7 @@ const navItems = [
     </button>
   </div>
 
-  <nav class="full-menu" id="full-menu">
+  <nav class="full-menu" id="full-menu" aria-label="Navegación principal">
     <div class="menu-background">
       <div class="vignette"></div>
       <div class="noise"></div>
@@ -52,7 +59,7 @@ const navItems = [
 
       <div class="menu-footer">
         <div class="social-row">
-          <a href="https://instagram.com/juanalcarazcine" target="_blank" class="f-link">INSTAGRAM</a>
+          <a href="https://instagram.com/juanalcarazcine" target="_blank" rel="noopener" class="f-link">INSTAGRAM</a>
           <span class="sep">/</span>
           <a href="mailto:juanalcarazcine@gmail.com" class="f-link">JUANALCARAZCINE@GMAIL.COM</a>
         </div>
@@ -492,6 +499,8 @@ const navItems = [
       isOpen = !isOpen;
       menu?.classList.toggle('open');
       document.body.style.overflow = isOpen ? 'hidden' : '';
+      newToggle?.setAttribute('aria-expanded', String(isOpen));
+      newToggle?.setAttribute('aria-label', isOpen ? 'Cerrar menú' : 'Abrir menú');
     }
 
     newToggle?.addEventListener('click', toggleMenu);

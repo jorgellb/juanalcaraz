@@ -3,9 +3,19 @@ import Layout from '../layouts/Layout.astro';
 
 const pageTitle = 'Contacto - Juan Alcaraz | Cineasta';
 const pageDescription = 'Contacta con Juan Alcaraz, cineasta y director para nuevos proyectos audiovisuales. Telf: +34 663 384 218 | Email: juanalcarazcine@gmail.com';
+
+// Datos estructurados: página de contacto vinculada al perfil del cineasta
+const contactPageLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  url: new URL('/contacto', Astro.site).href,
+  name: pageTitle,
+  description: pageDescription,
+  mainEntity: { '@id': 'https://juanalcaraz.es/#person' },
+};
 ---
 
-<Layout title={pageTitle} description={pageDescription}>
+<Layout title={pageTitle} description={pageDescription} jsonLd={contactPageLd}>
   <section class="contact-hero">
     <div class="container">
       <div class="hero-content">

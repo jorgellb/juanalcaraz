@@ -11,6 +11,8 @@ interface Props {
   image?: string;
   type?: 'website' | 'article' | 'profile';
   noindex?: boolean;
+  /** Solo la home tiene vídeo de Vimeo: adelanta la conexión únicamente allí */
+  preconnectVimeo?: boolean;
   jsonLd?: Record<string, any> | Record<string, any>[];
 }
 
@@ -20,6 +22,7 @@ const {
   image = '/og-default.jpg',
   type = 'website',
   noindex = false,
+  preconnectVimeo = false,
   jsonLd,
 } = Astro.props;
 
@@ -69,6 +72,7 @@ const personLd = {
   description: 'Cineasta y director audiovisual murciano, especializado en cortometrajes, videoclips, spots publicitarios y ficción.',
   knowsAbout: ['Dirección de cine', 'Cortometrajes', 'Videoclips', 'Spots publicitarios', 'Producción audiovisual', 'Ficción'],
   alumniOf: { '@type': 'CollegeOrUniversity', name: 'Universidad de Murcia' },
+  worksFor: { '@type': 'Organization', name: 'Oliva Films' },
   address: { '@type': 'PostalAddress', addressLocality: 'Murcia', addressRegion: 'Región de Murcia', addressCountry: 'ES' },
   email: 'mailto:juanalcarazcine@gmail.com',
   sameAs: [
@@ -109,17 +113,22 @@ const schemas = [
     <meta name="theme-color" content="#000000" />
     <link rel="canonical" href={canonicalURL} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
 
     <!-- Fuentes (preconnect para rendimiento) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href={FONTS_HREF} />
 
-    <!-- Vídeo de fondo (adelanta la conexión con Vimeo) -->
-    <link rel="preconnect" href="https://player.vimeo.com" />
-    <link rel="preconnect" href="https://i.vimeocdn.com" crossorigin />
-    <link rel="preconnect" href="https://f.vimeocdn.com" crossorigin />
-    <link rel="dns-prefetch" href="https://player.vimeo.com" />
+    {preconnectVimeo && (
+      <>
+        <!-- Vídeo de fondo (adelanta la conexión con Vimeo) -->
+        <link rel="preconnect" href="https://player.vimeo.com" />
+        <link rel="preconnect" href="https://i.vimeocdn.com" crossorigin />
+        <link rel="preconnect" href="https://f.vimeocdn.com" crossorigin />
+        <link rel="dns-prefetch" href="https://player.vimeo.com" />
+      </>
+    )}
 
     <!-- Open Graph -->
     <meta property="og:type" content={type} />
@@ -129,6 +138,8 @@ const schemas = [
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={imageURL} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Juan Alcaraz — Cineasta y Director Audiovisual" />
 
     <!-- Twitter -->
@@ -137,6 +148,7 @@ const schemas = [
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={imageURL} />
+    <meta name="twitter:image:alt" content="Juan Alcaraz — Cineasta y Director Audiovisual" />
 
     <ClientRouter />
 

@@ -60,9 +60,11 @@ const itemListLd = {
       <div class="filter-wrapper magic-reveal" style="transition-delay: 0.4s">
         <div class="filter-bar">
           {categories.map((cat, index) => (
-            <button 
-              class:list={['filter-btn', { active: cat === 'TODOS' }]} 
+            <button
+              type="button"
+              class:list={['filter-btn', { active: cat === 'TODOS' }]}
               data-category={cat === 'TODOS' ? 'all' : cat}
+              aria-pressed={cat === 'TODOS' ? 'true' : 'false'}
             >
               <span class="btn-num">0{index}</span>
               <span class="btn-label">{cat}</span>
@@ -71,7 +73,7 @@ const itemListLd = {
         </div>
         
         <div class="mobile-filter">
-          <label for="category-select" class="sr-only">Filtrar por categoría</label>
+          <label for="category-select" class="visually-hidden">Filtrar por categoría</label>
           <div class="select-wrapper">
             <select id="category-select" class="custom-select">
               {categories.map((cat) => (
@@ -95,7 +97,7 @@ const itemListLd = {
             </div>
           ))}
         </div>
-        <div class="no-results" id="no-results">No se han encontrado proyectos en esta categoría.</div>
+        <div class="no-results" id="no-results" role="status">No se han encontrado proyectos en esta categoría.</div>
       </div>
     </div>
   </section>
@@ -323,9 +325,10 @@ const itemListLd = {
     btns.forEach(btn => {
       btn.addEventListener('click', () => {
         // Active state
-        btns.forEach(b => b.classList.remove('active'));
+        btns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
         btn.classList.add('active');
-        
+        btn.setAttribute('aria-pressed', 'true');
+
         const filter = btn.getAttribute('data-category');
         if(select) select.value = filter || 'all';
         applyFilter(filter || 'all');
@@ -338,11 +341,9 @@ const itemListLd = {
         
         // Sync desktop buttons
         btns.forEach(b => {
-          if (b.getAttribute('data-category') === filter) {
-            b.classList.add('active');
-          } else {
-            b.classList.remove('active');
-          }
+          const isActive = b.getAttribute('data-category') === filter;
+          b.classList.toggle('active', isActive);
+          b.setAttribute('aria-pressed', String(isActive));
         });
         
         applyFilter(filter);

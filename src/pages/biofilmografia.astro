@@ -39,7 +39,13 @@ const profilePageLd = {
       <div class="intro-grid">
         <div class="intro-image-wrap magic-reveal">
           <div class="intro-image">
-            <img src="/biofilmografia.jpg" alt="Juan Alcaraz - Director de Cine y Productor" />
+            <img
+              src="/biofilmografia.jpg"
+              alt="Juan Alcaraz dirigiendo un rodaje tras la cámara"
+              width="1000"
+              height="667"
+              decoding="async"
+            />
           </div>
         </div>
         <div class="intro-text-wrap">
@@ -69,7 +75,7 @@ const profilePageLd = {
               {yearGroup.data.items.map((item) => (
                 <div class="timeline-film-item">
                   <div class="film-info">
-                    <h4 class="film-title">{item.title}</h4>
+                    <h3 class="film-title">{item.title}</h3>
                     <span class="film-category">{item.category}</span>
                   </div>
                   <div class="film-roles">

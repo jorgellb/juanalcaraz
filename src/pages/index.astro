@@ -1,17 +1,32 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+const pageTitle = 'Juan Alcaraz | Cineasta y Director Audiovisual';
+const pageDescription =
+  'Portfolio oficial de Juan Alcaraz, director de cine, cortometrajes, spots y vídeos creativos en Murcia.';
+
+const VIMEO_REEL_ID = '1175433396';
+
+// Datos estructurados: el reel de la portada como obra en vídeo
+const videoLd = {
+  '@context': 'https://schema.org',
+  '@type': 'VideoObject',
+  name: 'Reel de Juan Alcaraz — Cineasta y Director Audiovisual',
+  description:
+    'Selección de trabajos de dirección de Juan Alcaraz: ficción, videoclips y publicidad.',
+  thumbnailUrl: `https://vumbnail.com/${VIMEO_REEL_ID}.jpg`,
+  embedUrl: `https://player.vimeo.com/video/${VIMEO_REEL_ID}`,
+  creator: { '@id': 'https://juanalcaraz.es/#person' },
+};
 ---
 
-<Layout
-  title="Juan Alcaraz | Cineasta y Director Audiovisual"
-  description="Portfolio oficial de Juan Alcaraz, director de cine, cortometrajes, spots y vídeos creativos en Murcia."
->
+<Layout title={pageTitle} description={pageDescription} preconnectVimeo jsonLd={videoLd}>
   <section class="hero">
     <h1 class="visually-hidden">Juan Alcaraz — Cineasta y Director Audiovisual en Murcia</h1>
     <div class="video-background">
       <iframe
         id="hero-video"
-        src="https://player.vimeo.com/video/1175433396?background=1&autoplay=1&playsinline=1&color&autopause=0&loop=1&muted=1&title=0&portrait=0&byline=0"
+        src={`https://player.vimeo.com/video/${VIMEO_REEL_ID}?background=1&autoplay=1&playsinline=1&autopause=0&loop=1&muted=1&title=0&portrait=0&byline=0`}
         title="Reel de Juan Alcaraz, cineasta y director audiovisual"
         allow="autoplay; fullscreen"
         allowfullscreen
@@ -89,7 +104,7 @@ import Layout from '../layouts/Layout.astro';
   }
 </style>
 
-<script is:inline src="https://player.vimeo.com/api/player.js"></script>
+<script is:inline defer src="https://player.vimeo.com/api/player.js"></script>
 <script>
   function initHeroLoader() {
     const loader = document.getElementById('hero-loader');
