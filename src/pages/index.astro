@@ -2,22 +2,20 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout 
-  title="Juan Alcaraz | Cineasta y Director Audiovisual" 
+<Layout
+  title="Juan Alcaraz | Cineasta y Director Audiovisual"
   description="Portfolio oficial de Juan Alcaraz, director de cine, cortometrajes, spots y vídeos creativos en Murcia."
 >
   <section class="hero">
     <h1 class="visually-hidden">Juan Alcaraz — Cineasta y Director Audiovisual en Murcia</h1>
     <div class="video-background">
       <iframe
-        id="hero-video"
         src="https://player.vimeo.com/video/1175433396?background=1&autoplay=1&playsinline=1&color&autopause=0&loop=1&muted=1&title=0&portrait=0&byline=0"
         title="Reel de Juan Alcaraz, cineasta y director audiovisual"
         allow="autoplay; fullscreen"
         allowfullscreen
       ></iframe>
     </div>
-    <div class="hero-poster" id="hero-poster" aria-hidden="true"></div>
   </section>
 
 
@@ -51,53 +49,4 @@ import Layout from '../layouts/Layout.astro';
     height: 100%;
     border: none;
   }
-
-  /* Poster instantaneo mientras carga el video (evita el negro inicial) */
-  .hero-poster {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    background: #000 center/cover no-repeat;
-    background-image: url('https://vumbnail.com/1175433396_large.jpg');
-    transition: opacity 1s ease;
-    pointer-events: none;
-  }
-
-  .hero-poster.is-hidden {
-    opacity: 0;
-  }
 </style>
-
-<script>
-  function initHeroPoster() {
-    const poster = document.getElementById('hero-poster');
-    const iframe = document.getElementById('hero-video') as HTMLIFrameElement | null;
-    if (!poster || !iframe || (poster as any)._init) return;
-    (poster as any)._init = true;
-
-    let done = false;
-    const hide = () => { if (done) return; done = true; poster.classList.add('is-hidden'); };
-
-    // Cuando Vimeo empieza a reproducir, oculta el poster
-    window.addEventListener('message', (e: MessageEvent) => {
-      if (typeof e.origin !== 'string' || e.origin.indexOf('vimeo') === -1) return;
-      let d: any;
-      try { d = JSON.parse(e.data); } catch (_) { return; }
-      if (d && (d.event === 'playing' || d.event === 'play')) hide();
-    });
-
-    iframe.addEventListener('load', () => {
-      try {
-        iframe.contentWindow?.postMessage(JSON.stringify({ method: 'addEventListener', value: 'playing' }), '*');
-        iframe.contentWindow?.postMessage(JSON.stringify({ method: 'addEventListener', value: 'play' }), '*');
-      } catch (_) {}
-    });
-
-    // Fallback: ocultarlo pase lo que pase
-    setTimeout(hide, 4000);
-  }
-
-  document.addEventListener('astro:page-load', initHeroPoster);
-  initHeroPoster();
-</script>
-
