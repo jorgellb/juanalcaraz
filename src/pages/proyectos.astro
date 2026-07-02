@@ -256,11 +256,7 @@ const itemListLd = {
   }
 
   .grid-item.hidden {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
-    pointer-events: none;
-    position: absolute;
-    visibility: hidden;
+    display: none;
   }
 
   .no-results {
@@ -296,30 +292,32 @@ const itemListLd = {
     const select = document.getElementById('category-select') as HTMLSelectElement;
 
     function applyFilter(filter: string) {
-      let visibleCount = 0;
+      // Cross-fade elegante: atenúa la rejilla, intercambia y vuelve a mostrar
+      if (grid) grid.style.opacity = '0';
 
-      // Filtering
-      items.forEach(item => {
-        const cat = item.getAttribute('data-category');
-        if (filter === 'all' || cat === filter) {
-          item.classList.remove('hidden');
-          visibleCount++;
+      window.setTimeout(() => {
+        let visibleCount = 0;
+        items.forEach(item => {
+          const cat = item.getAttribute('data-category');
+          if (filter === 'all' || cat === filter) {
+            item.classList.remove('hidden');
+            visibleCount++;
+          } else {
+            item.classList.add('hidden');
+          }
+        });
+
+        if (visibleCount === 0) {
+          if (grid) grid.style.display = 'none';
+          if (noResults) noResults.style.display = 'block';
         } else {
-          item.classList.add('hidden');
+          if (grid) { grid.style.display = 'grid'; grid.style.opacity = '1'; }
+          if (noResults) noResults.style.display = 'none';
         }
-      });
 
-      // Toggle Grid/No-Results
-      if (visibleCount === 0) {
-        if (grid) grid.style.display = 'none';
-        if (noResults) noResults.style.display = 'block';
-      } else {
-        if (grid) grid.style.display = 'grid';
-        if (noResults) noResults.style.display = 'none';
-      }
-
-      // Trigger reveal animations
-      window.dispatchEvent(new Event('scroll'));
+        // Trigger reveal animations
+        window.dispatchEvent(new Event('scroll'));
+      }, 260);
     }
 
     btns.forEach(btn => {
