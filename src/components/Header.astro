@@ -1,5 +1,8 @@
 ---
-const currentPath = Astro.url.pathname;
+// Astro sirve las rutas con barra final ("/proyectos/") pero los enlaces se
+// escriben sin ella, asi que hay que normalizar o la pagina activa no casa nunca.
+const stripSlash = (path: string) => (path.length > 1 ? path.replace(/\/$/, '') : path);
+const currentPath = stripSlash(Astro.url.pathname);
 
 const navItems = [
   { href: '/', label: 'Inicio', sub: 'Home reel' },
@@ -47,8 +50,8 @@ const navItems = [
             <li class="nav-item">
               <a
                 href={item.href}
-                class:list={['nav-link', { active: currentPath === item.href }]}
-                aria-current={currentPath === item.href ? 'page' : undefined}
+                class:list={['nav-link', { active: currentPath === stripSlash(item.href) }]}
+                aria-current={currentPath === stripSlash(item.href) ? 'page' : undefined}
               >
                 <span class="nav-index">0{index + 1}</span>
                 <div class="nav-text-container">
@@ -314,6 +317,11 @@ const navItems = [
   .nav-link:hover .nav-label {
     color: #fff;
     transform: scale(1.05);
+  }
+
+  /* Pagina actual: mismo blanco que el hover, sin la escala (es un estado fijo) */
+  .nav-link.active .nav-label {
+    color: #fff;
   }
 
   .nav-link:hover .nav-sub {
