@@ -1,0 +1,39 @@
+---
+import Layout from './Layout.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  heading: string;
+}
+
+const { title, description, heading } = Astro.props;
+
+// Los textos legales no aportan nada a la búsqueda, pero deben seguir siendo
+// accesibles y rastreables: se indexan sin ofrecerse como resultado destacado.
+const legalLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  url: new URL(Astro.url.pathname, Astro.site).href,
+  name: title,
+  description,
+  inLanguage: 'es-ES',
+  isPartOf: { '@id': 'https://juanalcaraz.es/#website' },
+  about: { '@id': 'https://juanalcaraz.es/#person' },
+};
+---
+
+<Layout title={title} description={description} jsonLd={legalLd}>
+  <section class="legal-page">
+    <div class="container narrow">
+      <div class="legal-header">
+        <h1 class="legal-title magic-reveal">{heading}</h1>
+        <div class="legal-line magic-reveal" style="transition-delay: 0.2s"></div>
+      </div>
+
+      <div class="legal-content magic-reveal" style="transition-delay: 0.4s">
+        <slot />
+      </div>
+    </div>
+  </section>
+</Layout>
