@@ -1,20 +1,27 @@
 ---
 ---
 
-<div id="video-modal" class="video-modal" aria-hidden="true">
+<div
+  id="video-modal"
+  class="video-modal"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="modal-title"
+  aria-hidden="true"
+>
   <div class="modal-backdrop"></div>
   <div class="modal-content">
-    <button id="modal-close" class="modal-close" aria-label="Cerrar video">
+    <button type="button" id="modal-close" class="modal-close" aria-label="Cerrar vídeo">
       <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <line x1="18" y1="6" x2="6" y2="18"></line>
         <line x1="6" y1="6" x2="18" y2="18"></line>
       </svg>
     </button>
     <div class="video-wrapper">
-      <iframe id="modal-iframe" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
+      <iframe id="modal-iframe" src="" title="Reproductor de vídeo" allow="autoplay; fullscreen" allowfullscreen></iframe>
     </div>
     <div class="modal-info">
-      <h3 id="modal-title"></h3>
+      <p id="modal-title"></p>
     </div>
   </div>
 </div>
@@ -96,10 +103,14 @@
     text-align: center;
   }
 
+  /* Es el rótulo del diálogo, no un encabezado de la página: va en <p> para no
+     romper la jerarquía h1→h2. El uppercase lo daba la regla global de h3. */
   #modal-title {
     font-family: var(--font-display);
     font-size: 1.5rem;
     letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 400;
     color: white;
   }
 
@@ -138,21 +149,32 @@
       return url;
     }
 
+    // Devuelve el foco al elemento que abrió el vídeo al cerrarlo
+    let lastFocused: HTMLElement | null = null;
+
     function openModal(url: string, projectTitle: string) {
       if (!iframe) return;
+      lastFocused = document.activeElement as HTMLElement | null;
       iframe.src = getEmbedUrl(url);
+      iframe.title = `Vídeo: ${projectTitle}`;
       if (title) title.textContent = projectTitle;
       modal?.classList.add('active');
+      modal?.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
       document.body.classList.add('modal-open');
+      closeBtn?.focus();
     }
 
     function closeModal() {
       if (!iframe) return;
       modal?.classList.remove('active');
+      modal?.setAttribute('aria-hidden', 'true');
       iframe.src = '';
+      iframe.title = 'Reproductor de vídeo';
       document.body.style.overflow = '';
       document.body.classList.remove('modal-open');
+      lastFocused?.focus();
+      lastFocused = null;
     }
 
     triggers.forEach(trigger => {
@@ -166,10 +188,17 @@
     closeBtn.addEventListener('click', closeModal);
     modal.querySelector('.modal-backdrop')?.addEventListener('click', closeModal);
 
-    // ESC key to close
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && modal.classList.contains('active')) closeModal();
-    });
+    // ESC para cerrar. Va en `document`, que sobrevive a la navegación:
+    // se registra una sola vez para no acumular listeners en cada página.
+    if (!(window as any).__modalEscBound) {
+      (window as any).__modalEscBound = true;
+      document.addEventListener('keydown', (e) => {
+        const current = document.getElementById('video-modal');
+        if (e.key === 'Escape' && current?.classList.contains('active')) {
+          document.getElementById('modal-close')?.click();
+        }
+      });
+    }
   }
 
   // Initialize on load and on astro navigation

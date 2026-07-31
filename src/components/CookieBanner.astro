@@ -1,15 +1,15 @@
 ---
 ---
 
-<div id="cookie-banner" class="cookie-banner hidden">
+<div id="cookie-banner" class="cookie-banner hidden" role="region" aria-label="Aviso de cookies">
   <div class="cookie-content">
     <div class="cookie-text">
-      <h3 class="cookie-title">USO DE COOKIES</h3>
+      <p class="cookie-title">USO DE COOKIES</p>
       <p class="cookie-p">Utilizamos cookies propias y de terceros para mejorar la experiencia cinematográfica y ofrecer contenidos visuales integrados. <a href="/politica-cookies" class="cookie-link">Saber más</a>.</p>
     </div>
     <div class="cookie-actions">
-      <button id="btn-reject" class="cookie-btn cookie-reject">RECHAZAR</button>
-      <button id="btn-accept" class="cookie-btn cookie-accept">ACEPTAR</button>
+      <button type="button" id="btn-reject" class="cookie-btn cookie-reject">RECHAZAR</button>
+      <button type="button" id="btn-accept" class="cookie-btn cookie-accept">ACEPTAR</button>
     </div>
   </div>
 </div>
@@ -29,12 +29,15 @@
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
     transform: translateY(150%);
     opacity: 0;
+    /* Oculto también para teclado y lectores de pantalla mientras no se muestra */
+    visibility: hidden;
     transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .cookie-banner:not(.hidden) {
     transform: translateY(0);
     opacity: 1;
+    visibility: visible;
   }
 
   .cookie-content {
@@ -48,6 +51,7 @@
     font-family: var(--font-alt);
     font-size: 0.65rem;
     letter-spacing: 0.4em;
+    text-transform: uppercase;
     color: #fff;
     margin-bottom: 0.8rem;
     margin-top: 0;

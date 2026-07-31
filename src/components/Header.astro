@@ -45,7 +45,11 @@ const navItems = [
         <ul class="nav-list">
           {navItems.map((item, index) => (
             <li class="nav-item">
-              <a href={item.href} class:list={['nav-link', { active: currentPath === item.href }]}>
+              <a
+                href={item.href}
+                class:list={['nav-link', { active: currentPath === item.href }]}
+                aria-current={currentPath === item.href ? 'page' : undefined}
+              >
                 <span class="nav-index">0{index + 1}</span>
                 <div class="nav-text-container">
                   <span class="nav-label">{item.label}</span>
@@ -61,7 +65,7 @@ const navItems = [
         <div class="social-row">
           <a href="https://instagram.com/juanalcarazcine" target="_blank" rel="noopener" class="f-link">INSTAGRAM</a>
           <span class="sep">/</span>
-          <a href="mailto:juanalcarazcine@gmail.com" class="f-link">JUANALCARAZCINE@GMAIL.COM</a>
+          <!--email_off--><a href="mailto:juanalcarazcine@gmail.com" class="f-link">JUANALCARAZCINE@GMAIL.COM</a><!--/email_off-->
         </div>
         <div class="legal-row">
           <a href="/aviso-legal" class="l-link">AVISO LEGAL</a>

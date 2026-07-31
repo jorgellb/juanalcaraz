@@ -7,7 +7,8 @@ const pageDescription =
 
 const VIMEO_REEL_ID = '1175433396';
 
-// Datos estructurados: el reel de la portada como obra en vídeo
+// Datos estructurados: el reel de la portada como obra en vídeo.
+// uploadDate y duration salen de la propia API de Vimeo (oEmbed) para ese ID.
 const videoLd = {
   '@context': 'https://schema.org',
   '@type': 'VideoObject',
@@ -16,6 +17,8 @@ const videoLd = {
     'Selección de trabajos de dirección de Juan Alcaraz: ficción, videoclips y publicidad.',
   thumbnailUrl: `https://vumbnail.com/${VIMEO_REEL_ID}.jpg`,
   embedUrl: `https://player.vimeo.com/video/${VIMEO_REEL_ID}`,
+  uploadDate: '2026-03-20',
+  duration: 'PT48S',
   creator: { '@id': 'https://juanalcaraz.es/#person' },
 };
 ---
