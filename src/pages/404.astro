@@ -1,31 +1,58 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { LANGS, localizedPath } from '../i18n';
 
 const pageTitle = 'Página no encontrada | Juan Alcaraz';
 const pageDescription = 'La página que buscas no existe. Vuelve al inicio para descubrir los proyectos de Juan Alcaraz, cineasta y director de cine.';
+
+// El servidor entrega este mismo 404.html para cualquier URL que no exista,
+// también bajo /en/. Se pintan los dos idiomas y un script deja el que toca.
+const copy = {
+  es: { eyebrow: 'Fuera de plano', heading: 'CORTEN', accent: 'Esta escena no existe', back: 'Volver al inicio' },
+  en: { eyebrow: 'Out of frame', heading: 'CUT', accent: 'This scene does not exist', back: 'Back to home' },
+};
 ---
 
 <Layout title={pageTitle} description={pageDescription} noindex>
   <section class="notfound-hero">
     <div class="container">
-      <div class="hero-content">
-        <div class="eh-top magic-reveal">
-          <span class="eh-index">404</span>
-          <span class="eh-rule"></span>
-          <span class="eh-eyebrow">Fuera de plano</span>
+      {LANGS.map((code) => (
+        <div class="hero-content" data-nf-lang={code} lang={code} hidden={code !== 'es'}>
+          <div class="eh-top magic-reveal">
+            <span class="eh-index">404</span>
+            <span class="eh-rule"></span>
+            <span class="eh-eyebrow">{copy[code].eyebrow}</span>
+          </div>
+          <h1 class="hero-title magic-reveal">{copy[code].heading}</h1>
+          <p class="eh-accent magic-reveal">{copy[code].accent}</p>
+          <a href={localizedPath('home', code)} class="back-home magic-reveal">
+            <span class="bh-label">{copy[code].back}</span>
+            <span class="bh-arrow" aria-hidden="true">↗</span>
+          </a>
         </div>
-        <h1 class="hero-title magic-reveal">CORTEN</h1>
-        <p class="eh-accent magic-reveal">Esta escena no existe</p>
-        <a href="/" class="back-home magic-reveal">
-          <span class="bh-label">Volver al inicio</span>
-          <span class="bh-arrow" aria-hidden="true">↗</span>
-        </a>
-      </div>
+      ))}
     </div>
   </section>
+
+  <script is:inline>
+    (function () {
+      var isEnglish = /^\/en(\/|$)/.test(location.pathname);
+      if (!isEnglish) return;
+      document.documentElement.lang = 'en';
+      document.title = 'Page not found | Juan Alcaraz';
+      document.querySelectorAll('[data-nf-lang]').forEach(function (block) {
+        block.hidden = block.getAttribute('data-nf-lang') !== 'en';
+      });
+    })();
+  </script>
 </Layout>
 
 <style>
+  /* Gana a cualquier display de .hero-content: solo se ve el idioma que toca */
+  .hero-content[hidden] {
+    display: none;
+  }
+
   .notfound-hero {
     padding: 15rem 0 12rem;
     background: #000;

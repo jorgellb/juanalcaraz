@@ -1,4 +1,8 @@
 ---
+import { getLang } from '../i18n';
+import { useTranslations } from '../i18n/ui';
+
+const t = useTranslations(getLang(Astro.url.pathname));
 ---
 
 <div
@@ -8,17 +12,19 @@
   aria-modal="true"
   aria-labelledby="modal-title"
   aria-hidden="true"
+  data-player-title={t('modal.player')}
+  data-video-prefix={t('modal.videoPrefix')}
 >
   <div class="modal-backdrop"></div>
   <div class="modal-content">
-    <button type="button" id="modal-close" class="modal-close" aria-label="Cerrar vídeo">
+    <button type="button" id="modal-close" class="modal-close" aria-label={t('modal.close')}>
       <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <line x1="18" y1="6" x2="6" y2="18"></line>
         <line x1="6" y1="6" x2="18" y2="18"></line>
       </svg>
     </button>
     <div class="video-wrapper">
-      <iframe id="modal-iframe" src="" title="Reproductor de vídeo" allow="autoplay; fullscreen" allowfullscreen></iframe>
+      <iframe id="modal-iframe" src="" title={t('modal.player')} allow="autoplay; fullscreen" allowfullscreen></iframe>
     </div>
     <div class="modal-info">
       <p id="modal-title"></p>
@@ -156,7 +162,7 @@
       if (!iframe) return;
       lastFocused = document.activeElement as HTMLElement | null;
       iframe.src = getEmbedUrl(url);
-      iframe.title = `Vídeo: ${projectTitle}`;
+      iframe.title = `${modal?.dataset.videoPrefix ?? ''} ${projectTitle}`.trim();
       if (title) title.textContent = projectTitle;
       modal?.classList.add('active');
       modal?.setAttribute('aria-hidden', 'false');
@@ -170,7 +176,7 @@
       modal?.classList.remove('active');
       modal?.setAttribute('aria-hidden', 'true');
       iframe.src = '';
-      iframe.title = 'Reproductor de vídeo';
+      iframe.title = modal?.dataset.playerTitle ?? '';
       document.body.style.overflow = '';
       document.body.classList.remove('modal-open');
       lastFocused?.focus();

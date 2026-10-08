@@ -1,15 +1,20 @@
 ---
+import { getLang, localizedPath } from '../i18n';
+import { useTranslations } from '../i18n/ui';
+
+const lang = getLang(Astro.url.pathname);
+const t = useTranslations(lang);
 ---
 
-<div id="cookie-banner" class="cookie-banner hidden" role="region" aria-label="Aviso de cookies">
+<div id="cookie-banner" class="cookie-banner hidden" role="region" aria-label={t('cookies.region')}>
   <div class="cookie-content">
     <div class="cookie-text">
-      <p class="cookie-title">USO DE COOKIES</p>
-      <p class="cookie-p">Utilizamos cookies propias y de terceros para mejorar la experiencia cinematográfica y ofrecer contenidos visuales integrados. <a href="/politica-cookies" class="cookie-link">Saber más</a>.</p>
+      <p class="cookie-title">{t('cookies.title')}</p>
+      <p class="cookie-p">{t('cookies.text')} <a href={localizedPath('cookies', lang)} class="cookie-link">{t('cookies.more')}</a>.</p>
     </div>
     <div class="cookie-actions">
-      <button type="button" id="btn-reject" class="cookie-btn cookie-reject">RECHAZAR</button>
-      <button type="button" id="btn-accept" class="cookie-btn cookie-accept">ACEPTAR</button>
+      <button type="button" id="btn-reject" class="cookie-btn cookie-reject">{t('cookies.reject')}</button>
+      <button type="button" id="btn-accept" class="cookie-btn cookie-accept">{t('cookies.accept')}</button>
     </div>
   </div>
 </div>

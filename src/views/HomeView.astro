@@ -1,0 +1,201 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { LANG_TAGS, getLang, localizedPath } from '../i18n';
+
+const lang = getLang(Astro.url.pathname);
+
+const copy = {
+  es: {
+    title: 'Juan Alcaraz | Director de cine y realizador audiovisual',
+    description:
+      'Juan Alcaraz dirige proyectos de ficción, publicidad y videoclips, con una mirada personal al servicio de cada historia.',
+    h1: 'Juan Alcaraz — Cineasta y Director de Cine en Murcia',
+    imageAlt: 'Juan Alcaraz, director de cine, durante un rodaje',
+    reelTitle: 'Reel de Juan Alcaraz, cineasta y director de cine',
+    reelName: 'Reel de Juan Alcaraz — Cineasta y Director de Cine',
+    reelDescription:
+      'Selección de trabajos de dirección de Juan Alcaraz: ficción, videoclips y publicidad.',
+  },
+  en: {
+    title: 'Juan Alcaraz | Film Director and Filmmaker',
+    description:
+      'Juan Alcaraz directs fiction, commercials and music videos, bringing a personal vision to the service of every story.',
+    h1: 'Juan Alcaraz — Filmmaker and Film Director in Murcia, Spain',
+    imageAlt: 'Juan Alcaraz, film director, on set during a shoot',
+    reelTitle: 'Reel by Juan Alcaraz, filmmaker and film director',
+    reelName: 'Juan Alcaraz Reel — Filmmaker and Film Director',
+    reelDescription:
+      'A selection of directing work by Juan Alcaraz: fiction, music videos and commercials.',
+  },
+}[lang];
+
+// Imagen de la portada al compartirla en redes y la que se propone a Google
+// como imagen principal de la página (primaryImageOfPage).
+const HOME_IMAGE = { src: '/home-seo.jpg', width: 1000, height: 667 };
+
+const VIMEO_REEL_ID = '1175433396';
+
+const pageUrl = new URL(localizedPath('home', lang), Astro.site).href;
+
+const webPageLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  '@id': `${pageUrl}#webpage`,
+  url: pageUrl,
+  name: copy.title,
+  description: copy.description,
+  inLanguage: LANG_TAGS[lang].schema,
+  isPartOf: { '@id': 'https://juanalcaraz.es/#website' },
+  about: { '@id': 'https://juanalcaraz.es/#person' },
+  primaryImageOfPage: {
+    '@type': 'ImageObject',
+    url: new URL(HOME_IMAGE.src, Astro.site).href,
+    width: HOME_IMAGE.width,
+    height: HOME_IMAGE.height,
+    caption: copy.imageAlt,
+  },
+};
+
+// Datos estructurados: el reel de la portada como obra en vídeo.
+// uploadDate y duration salen de la propia API de Vimeo (oEmbed) para ese ID.
+const videoLd = {
+  '@context': 'https://schema.org',
+  '@type': 'VideoObject',
+  name: copy.reelName,
+  description: copy.reelDescription,
+  thumbnailUrl: `https://vumbnail.com/${VIMEO_REEL_ID}.jpg`,
+  embedUrl: `https://player.vimeo.com/video/${VIMEO_REEL_ID}`,
+  uploadDate: '2026-03-20',
+  duration: 'PT48S',
+  creator: { '@id': 'https://juanalcaraz.es/#person' },
+};
+---
+
+<Layout
+  title={copy.title}
+  description={copy.description}
+  image={HOME_IMAGE.src}
+  imageWidth={HOME_IMAGE.width}
+  imageHeight={HOME_IMAGE.height}
+  imageAlt={copy.imageAlt}
+  preconnectVimeo
+  jsonLd={[webPageLd, videoLd]}
+>
+  <section class="hero">
+    <h1 class="visually-hidden">{copy.h1}</h1>
+    <div class="video-background">
+      <iframe
+        id="hero-video"
+        src={`https://player.vimeo.com/video/${VIMEO_REEL_ID}?background=1&autoplay=1&playsinline=1&autopause=0&loop=1&muted=1&title=0&portrait=0&byline=0`}
+        title={copy.reelTitle}
+        allow="autoplay; fullscreen"
+        allowfullscreen
+      ></iframe>
+    </div>
+    <div class="hero-loader" id="hero-loader" aria-hidden="true">
+      <span class="hero-ring"></span>
+    </div>
+  </section>
+
+
+</Layout>
+
+<style>
+  .hero {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    background: #000;
+  }
+
+  .video-background {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100vw;
+    height: 56.25vw;
+    min-height: 100vh;
+    min-width: 177.77vh;
+    /* Zoom hasta cubrir toda la pantalla (sin huecos) */
+    transform: translate(-50%, -50%) scale(1.05);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .video-background iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  /* Indicador de carga (se funde cuando el vídeo arranca) */
+  .hero-loader {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.9s ease;
+    pointer-events: none;
+  }
+
+  .hero-loader.is-hidden {
+    opacity: 0;
+  }
+
+  .hero-ring {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-top-color: rgba(255, 255, 255, 0.8);
+    animation: hero-spin 0.9s linear infinite;
+  }
+
+  @keyframes hero-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-ring { animation: none; }
+  }
+</style>
+
+<script is:inline defer src="https://player.vimeo.com/api/player.js"></script>
+<script>
+  function initHeroLoader() {
+    const loader = document.getElementById('hero-loader');
+    const iframe = document.getElementById('hero-video') as HTMLIFrameElement | null;
+    if (!loader || !iframe || (loader as any)._init) return;
+    (loader as any)._init = true;
+
+    let done = false;
+    const hide = () => { if (done) return; done = true; loader.classList.add('is-hidden'); };
+
+    // Deteccion fiable con el SDK de Vimeo (con reintento hasta que cargue)
+    let tries = 0;
+    const attach = () => {
+      const Vimeo = (window as any).Vimeo;
+      if (Vimeo && Vimeo.Player) {
+        try {
+          const player = new Vimeo.Player(iframe);
+          player.on('timeupdate', hide); // se dispara solo cuando el video avanza (ya se ve)
+          player.on('playing', hide);
+          player.on('bufferend', hide);
+        } catch (_) {}
+      } else if (tries++ < 20) {
+        setTimeout(attach, 150);
+      }
+    };
+    attach();
+
+    // Fallback por si el SDK no carga o tarda demasiado
+    setTimeout(hide, 6000);
+  }
+
+  document.addEventListener('astro:page-load', initHeroLoader);
+  initHeroLoader();
+</script>

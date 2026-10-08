@@ -1,44 +1,58 @@
 ---
-// Astro sirve las rutas con barra final ("/proyectos/") pero los enlaces se
-// escriben sin ella, asi que hay que normalizar o la pagina activa no casa nunca.
+import LangSwitch from './LangSwitch.astro';
+import { getLang, localizedPath } from '../i18n';
+import { useTranslations } from '../i18n/ui';
+
+// Astro sirve las rutas con barra final ("/proyectos/") pero puede llegar sin
+// ella, asi que hay que normalizar o la pagina activa no casa nunca.
 const stripSlash = (path: string) => (path.length > 1 ? path.replace(/\/$/, '') : path);
 const currentPath = stripSlash(Astro.url.pathname);
 
-const navItems = [
-  { href: '/', label: 'Inicio', sub: 'Home reel' },
-  { href: '/proyectos', label: 'Proyectos', sub: 'Projects' },
-  { href: '/biofilmografia', label: 'Filmografía', sub: 'Filmography' },
-  { href: '/contacto', label: 'Contacto', sub: 'Write the future' }
-];
+const lang = getLang(Astro.url.pathname);
+const t = useTranslations(lang);
+
+const navItems = (['home', 'projects', 'filmography', 'contact'] as const).map((key) => ({
+  href: localizedPath(key, lang),
+  label: t(`nav.${key}`),
+  sub: t(`nav.${key}.sub`),
+}));
 ---
 
 <header class="header" id="main-header">
   <div class="header-inner">
     <div class="logo-container">
-      <a href="/" class="logo-link" aria-label="Juan Alcaraz — Inicio">
+      <a href={localizedPath('home', lang)} class="logo-link" aria-label={t('header.logoLabel')}>
         <p class="elementor-heading-title premium-logo">JU<i>A</i>N <i>A</i>LC<i>A</i>R<i>A</i>Z</p>
       </a>
-      <span class="role flicker-slow">CINE<i>A</i>ST<i>A</i></span>
+      <span class="role flicker-slow">
+        {lang === 'es' ? <>CINE<i>A</i>ST<i>A</i></> : <>FILMM<i>A</i>KER</>}
+      </span>
     </div>
 
-    <button
-      class="menu-btn"
-      id="menu-toggle"
-      type="button"
-      aria-label="Abrir menú"
-      aria-expanded="false"
-      aria-controls="full-menu"
-    >
-      <div class="btn-hover-bg"></div>
-      <span class="menu-text">EXPLORE</span>
-      <div class="hamburger">
-        <span class="line l1"></span>
-        <span class="line l2"></span>
-      </div>
-    </button>
+    <div class="header-actions">
+      <LangSwitch variant="bar" />
+
+      <button
+        class="menu-btn"
+        id="menu-toggle"
+        type="button"
+        aria-label={t('header.menuOpen')}
+        aria-expanded="false"
+        aria-controls="full-menu"
+        data-label-open={t('header.menuOpen')}
+        data-label-close={t('header.menuClose')}
+      >
+        <div class="btn-hover-bg"></div>
+        <span class="menu-text">EXPLORE</span>
+        <div class="hamburger">
+          <span class="line l1"></span>
+          <span class="line l2"></span>
+        </div>
+      </button>
+    </div>
   </div>
 
-  <nav class="full-menu" id="full-menu" aria-label="Navegación principal">
+  <nav class="full-menu" id="full-menu" aria-label={t('header.navLabel')}>
     <div class="menu-background">
       <div class="vignette"></div>
       <div class="noise"></div>
@@ -64,6 +78,8 @@ const navItems = [
         </ul>
       </div>
 
+      <LangSwitch variant="menu" />
+
       <div class="menu-footer">
         <div class="social-row">
           <a href="https://instagram.com/juanalcarazcine" target="_blank" rel="noopener" class="f-link">INSTAGRAM</a>
@@ -71,11 +87,11 @@ const navItems = [
           <!--email_off--><a href="mailto:juanalcarazcine@gmail.com" class="f-link">JUANALCARAZCINE@GMAIL.COM</a><!--/email_off-->
         </div>
         <div class="legal-row">
-          <a href="/aviso-legal" class="l-link">AVISO LEGAL</a>
+          <a href={localizedPath('legal', lang)} class="l-link">{t('footer.legal')}</a>
           <span class="sep">·</span>
-          <a href="/politica-privacidad" class="l-link">POLÍTICA PRIVACIDAD</a>
+          <a href={localizedPath('privacy', lang)} class="l-link">{t('footer.privacy')}</a>
           <span class="sep">·</span>
-          <a href="/politica-cookies" class="l-link">POLÍTICA COOKIES</a>
+          <a href={localizedPath('cookies', lang)} class="l-link">{t('footer.cookies')}</a>
         </div>
       </div>
     </div>
@@ -148,6 +164,13 @@ const navItems = [
   .premium-logo i, .role i {
     font-style: italic;
     font-weight: inherit;
+  }
+
+  /* Selector de idioma + botón del menú */
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.6rem;
   }
 
   /* Menu Toggle Button */
@@ -498,21 +521,23 @@ const navItems = [
   function initMenu() {
     const toggle = document.getElementById('menu-toggle');
     const menu = document.getElementById('full-menu');
-    const navLinks = document.querySelectorAll('.nav-link');
+    // Los enlaces del menú y el selector de idioma que vive dentro de él
+    const navLinks = document.querySelectorAll('.nav-link, .full-menu .ls-opt');
     let isOpen = false;
 
     if (!toggle || !menu) return;
 
     // Remove existing event listeners if any (though astro:page-load handles this usually)
     toggle.replaceWith(toggle.cloneNode(true));
-    const newToggle = document.getElementById('menu-toggle');
+    const newToggle = document.getElementById('menu-toggle') as HTMLButtonElement | null;
 
     function toggleMenu() {
       isOpen = !isOpen;
       menu?.classList.toggle('open');
       document.body.style.overflow = isOpen ? 'hidden' : '';
       newToggle?.setAttribute('aria-expanded', String(isOpen));
-      newToggle?.setAttribute('aria-label', isOpen ? 'Cerrar menú' : 'Abrir menú');
+      const label = isOpen ? newToggle?.dataset.labelClose : newToggle?.dataset.labelOpen;
+      if (label) newToggle?.setAttribute('aria-label', label);
     }
 
     newToggle?.addEventListener('click', toggleMenu);

@@ -1,5 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { getLang } from '../i18n';
+import { projectCategory, useTranslations } from '../i18n/ui';
 
 interface Props {
   project: CollectionEntry<'projects'>;
@@ -9,6 +11,11 @@ interface Props {
 const { project, featured = false } = Astro.props;
 const { title, category, videoUrl, thumbnail, year } = project.data;
 
+const lang = getLang(Astro.url.pathname);
+const t = useTranslations(lang);
+// `category` es la clave del filtro (en español); esto es lo que se lee
+const categoryLabel = projectCategory(category, lang);
+
 const FALLBACK_THUMB = 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=1200';
 
 const getThumbUrl = (url: string) => {
@@ -16,7 +23,7 @@ const getThumbUrl = (url: string) => {
     const id = url.split('/').filter(Boolean).pop();
     return `https://vumbnail.com/${id}.jpg`;
   }
-  
+
   if (url.includes('youtube') || url.includes('youtu.be')) {
     let id = '';
     if (url.includes('v=')) {
@@ -32,16 +39,16 @@ const getThumbUrl = (url: string) => {
 };
 
 const thumbUrl = thumbnail ?? getThumbUrl(videoUrl);
-const thumbAlt = `${title} (${year}) — ${category.toLowerCase()} de Juan Alcaraz`;
+const thumbAlt = `${title} (${year}) — ${categoryLabel.toLowerCase()} ${t('card.altBy')}`;
 ---
 
-<article 
-  class:list={['project-card', { featured }]} 
+<article
+  class:list={['project-card', { featured }]}
   data-category={category}
   data-video-url={videoUrl}
   data-project-title={title}
 >
-  <button class="project-trigger" aria-label={`Ver proyecto ${title}`}>
+  <button class="project-trigger" aria-label={`${t('card.view')} ${title}`}>
     <div class="thumbnail">
       <img
         src={thumbUrl}
@@ -55,7 +62,7 @@ const thumbAlt = `${title} (${year}) — ${category.toLowerCase()} de Juan Alcar
       <div class="overlay">
         <div class="overlay-content">
           <div class="meta-top">
-            <span class="category">{category}</span>
+            <span class="category">{categoryLabel}</span>
             <span class="year">{year}</span>
           </div>
           <h3 class="title">{title}</h3>

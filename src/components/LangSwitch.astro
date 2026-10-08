@@ -1,0 +1,161 @@
+---
+import { LANGS, LANG_NAMES, getLang, switchLangPath } from '../i18n';
+import { useTranslations } from '../i18n/ui';
+
+interface Props {
+  /** `bar`: códigos ES / EN en la cabecera. `menu`: nombres completos dentro del menú (móvil). */
+  variant?: 'bar' | 'menu';
+}
+
+const { variant = 'bar' } = Astro.props;
+const current = getLang(Astro.url.pathname);
+const t = useTranslations(current);
+---
+
+<div class:list={['lang-switch', `is-${variant}`]} role="group" aria-label={t('lang.label')}>
+  {variant === 'menu' && <span class="ls-eyebrow" aria-hidden="true">{t('lang.label')}</span>}
+  <div class="ls-options">
+    {LANGS.map((code, index) => (
+      <>
+        {index > 0 && <span class="ls-sep" aria-hidden="true"></span>}
+        <a
+          href={switchLangPath(Astro.url.pathname, code)}
+          class:list={['ls-opt', { active: code === current }]}
+          hreflang={code}
+          lang={code}
+          aria-label={LANG_NAMES[code]}
+          aria-current={code === current ? 'true' : undefined}
+        >
+          <span class="ls-code">{variant === 'menu' ? LANG_NAMES[code] : code}</span>
+          <span class="ls-line"></span>
+        </a>
+      </>
+    ))}
+  </div>
+</div>
+
+<style>
+  .lang-switch {
+    display: flex;
+    align-items: center;
+  }
+
+  .ls-options {
+    display: flex;
+    align-items: center;
+    gap: 0.95rem;
+  }
+
+  .ls-opt {
+    position: relative;
+    display: block;
+    padding: 0.7rem 0;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .ls-code {
+    display: block;
+    font-family: var(--font-alt);
+    font-size: 0.7rem;
+    line-height: 1;
+    letter-spacing: 0.4em;
+    /* El interletraje deja aire tras la última letra: se compensa para que
+       la línea inferior mida exactamente lo mismo que el texto */
+    margin-right: -0.4em;
+    text-transform: uppercase;
+    opacity: 0.32;
+    transition: opacity 0.5s ease;
+  }
+
+  .ls-opt:hover .ls-code,
+  .ls-opt:focus-visible .ls-code,
+  .ls-opt.active .ls-code {
+    opacity: 1;
+  }
+
+  /* Línea fina bajo el idioma: fija en el activo, se dibuja al pasar por el otro */
+  .ls-line {
+    position: absolute;
+    left: 0;
+    bottom: 0.3rem;
+    width: 100%;
+    height: 1px;
+    background: #fff;
+    opacity: 0.45;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+  }
+
+  .ls-opt:hover .ls-line,
+  .ls-opt:focus-visible .ls-line {
+    transform: scaleX(1);
+  }
+
+  .ls-opt.active .ls-line {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+
+  /* Barra inclinada, como la de una claqueta */
+  .ls-sep {
+    width: 1px;
+    height: 0.95rem;
+    background: rgba(255, 255, 255, 0.28);
+    transform: rotate(20deg);
+  }
+
+  /* ── Cabecera ── */
+  .is-bar {
+    mix-blend-mode: difference;
+  }
+
+  /* Al cambiar de idioma, la línea se desliza de un código al otro */
+  .is-bar .ls-opt.active .ls-line {
+    view-transition-name: lang-indicator;
+  }
+
+  /* ── Dentro del menú a pantalla completa (solo móvil) ── */
+  .is-menu {
+    display: none;
+    flex-direction: column;
+    gap: 0.9rem;
+    margin-top: 3rem;
+  }
+
+  .ls-eyebrow {
+    font-family: var(--font-alt);
+    font-size: 0.5rem;
+    letter-spacing: 0.6em;
+    margin-right: -0.6em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.25);
+  }
+
+  .is-menu .ls-options {
+    gap: 1.4rem;
+  }
+
+  .is-menu .ls-code {
+    font-size: 0.68rem;
+    letter-spacing: 0.45em;
+    margin-right: -0.45em;
+  }
+
+  .is-menu .ls-sep {
+    width: 1.8rem;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.18);
+    transform: none;
+  }
+
+  @media (max-width: 768px) {
+    .is-bar { display: none; }
+    .is-menu { display: flex; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ls-line { transition: none; }
+  }
+</style>

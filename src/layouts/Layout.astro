@@ -4,11 +4,17 @@ import '../styles/global.css';
 import Header from '../components/Header.astro';
 import VideoModal from '../components/VideoModal.astro';
 import CookieBanner from '../components/CookieBanner.astro';
+import { DEFAULT_LANG, LANGS, LANG_TAGS, getLang, getRouteKey, localizedPath } from '../i18n';
+import { useTranslations } from '../i18n/ui';
 
 interface Props {
   title: string;
   description?: string;
   image?: string;
+  /** Tamaño real de `image` en píxeles (por defecto, el de og-default.jpg) */
+  imageWidth?: number;
+  imageHeight?: number;
+  imageAlt?: string;
   type?: 'website' | 'article' | 'profile';
   noindex?: boolean;
   /** Solo la home tiene vídeo de Vimeo: adelanta la conexión únicamente allí */
@@ -16,10 +22,16 @@ interface Props {
   jsonLd?: Record<string, any> | Record<string, any>[];
 }
 
+const lang = getLang(Astro.url.pathname);
+const t = useTranslations(lang);
+
 const {
   title,
-  description = 'Juan Alcaraz, cineasta y director de cine murciano. Dirección de cortometrajes, videoclips, spots publicitarios y proyectos audiovisuales.',
+  description = t('site.defaultDescription'),
   image = '/og-default.jpg',
+  imageWidth = 1200,
+  imageHeight = 630,
+  imageAlt = t('site.imageAlt'),
   type = 'website',
   noindex = false,
   preconnectVimeo = false,
@@ -36,28 +48,42 @@ const robotsContent = noindex
 
 const FONTS_HREF = 'https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;600&family=Manrope:wght@200;400;700&family=Playfair+Display:ital@1&display=swap';
 
+// Versiones de esta misma página en cada idioma (hreflang). Las páginas fuera
+// del mapa de rutas (el 404) o marcadas como noindex no anuncian alternativas.
+const routeKey = getRouteKey(Astro.url.pathname);
+const alternates = routeKey && !noindex
+  ? [
+      ...LANGS.map((code) => ({
+        hreflang: LANG_TAGS[code].html,
+        href: new URL(localizedPath(routeKey, code), Astro.site).href,
+      })),
+      { hreflang: 'x-default', href: new URL(localizedPath(routeKey, DEFAULT_LANG), Astro.site).href },
+    ]
+  : [];
+
 // Breadcrumbs automáticos según la ruta
-const segments = Astro.url.pathname.split('/').filter(Boolean);
-const SEGMENT_NAMES: Record<string, string> = {
-  proyectos: 'Proyectos',
-  biofilmografia: 'Filmografía y Biografía',
-  contacto: 'Contacto',
-  'aviso-legal': 'Aviso Legal',
-  'politica-privacidad': 'Política de Privacidad',
-  'politica-cookies': 'Política de Cookies',
-};
-const breadcrumbLd = segments.length === 0 ? null : {
+const breadcrumbLd = !routeKey || routeKey === 'home' ? null : {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${SITE}/` },
-    ...segments.map((seg, i) => ({
+    {
       '@type': 'ListItem',
-      position: i + 2,
-      name: SEGMENT_NAMES[seg] ?? seg,
-      item: `${SITE}/${segments.slice(0, i + 1).join('/')}`,
-    })),
+      position: 1,
+      name: t('breadcrumb.home'),
+      item: new URL(localizedPath('home', lang), Astro.site).href,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: t(`breadcrumb.${routeKey}`),
+      item: new URL(localizedPath(routeKey, lang), Astro.site).href,
+    },
   ],
+};
+
+const KNOWS_ABOUT = {
+  es: ['Dirección de cine', 'Cortometrajes', 'Videoclips', 'Spots publicitarios', 'Producción audiovisual', 'Ficción'],
+  en: ['Film directing', 'Short films', 'Music videos', 'Commercials', 'Audiovisual production', 'Fiction'],
 };
 
 const personLd = {
@@ -68,9 +94,9 @@ const personLd = {
   alternateName: 'Juan Alcaraz Cine',
   url: SITE,
   image: `${SITE}/og-default.jpg`,
-  jobTitle: 'Cineasta y Director de Cine',
-  description: 'Cineasta y director de cine murciano, especializado en cortometrajes, videoclips, spots publicitarios y ficción.',
-  knowsAbout: ['Dirección de cine', 'Cortometrajes', 'Videoclips', 'Spots publicitarios', 'Producción audiovisual', 'Ficción'],
+  jobTitle: t('person.jobTitle'),
+  description: t('person.description'),
+  knowsAbout: KNOWS_ABOUT[lang],
   alumniOf: { '@type': 'CollegeOrUniversity', name: 'Universidad de Murcia' },
   worksFor: { '@type': 'Organization', name: 'Oliva Films' },
   address: { '@type': 'PostalAddress', addressLocality: 'Murcia', addressRegion: 'Región de Murcia', addressCountry: 'ES' },
@@ -85,9 +111,9 @@ const websiteLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   '@id': `${SITE}/#website`,
-  name: 'Juan Alcaraz | Cineasta',
+  name: t('site.name'),
   url: SITE,
-  inLanguage: 'es-ES',
+  inLanguage: LANGS.map((code) => LANG_TAGS[code].schema),
   publisher: { '@id': `${SITE}/#person` },
 };
 
@@ -100,7 +126,7 @@ const schemas = [
 ---
 
 <!DOCTYPE html>
-<html lang="es">
+<html lang={LANG_TAGS[lang].html}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -112,6 +138,9 @@ const schemas = [
     <meta name="robots" content={robotsContent} />
     <meta name="theme-color" content="#000000" />
     <link rel="canonical" href={canonicalURL} />
+    {alternates.map((alt) => (
+      <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />
+    ))}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
 
@@ -135,15 +164,18 @@ const schemas = [
 
     <!-- Open Graph -->
     <meta property="og:type" content={type} />
-    <meta property="og:site_name" content="Juan Alcaraz | Cineasta" />
-    <meta property="og:locale" content="es_ES" />
+    <meta property="og:site_name" content={t('site.name')} />
+    <meta property="og:locale" content={LANG_TAGS[lang].og} />
+    {LANGS.filter((code) => code !== lang).map((code) => (
+      <meta property="og:locale:alternate" content={LANG_TAGS[code].og} />
+    ))}
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={imageURL} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Juan Alcaraz — Cineasta y Director de Cine" />
+    <meta property="og:image:width" content={String(imageWidth)} />
+    <meta property="og:image:height" content={String(imageHeight)} />
+    <meta property="og:image:alt" content={imageAlt} />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -151,7 +183,7 @@ const schemas = [
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={imageURL} />
-    <meta name="twitter:image:alt" content="Juan Alcaraz — Cineasta y Director de Cine" />
+    <meta name="twitter:image:alt" content={imageAlt} />
 
     <ClientRouter />
 
@@ -159,7 +191,7 @@ const schemas = [
       <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
     ))}
   </head>
-  
+
   <body>
     <div class="spotlight" id="spotlight"></div>
 

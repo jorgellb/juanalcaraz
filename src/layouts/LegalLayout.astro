@@ -1,5 +1,6 @@
 ---
 import Layout from './Layout.astro';
+import { LANG_TAGS, getLang } from '../i18n';
 
 interface Props {
   title: string;
@@ -8,6 +9,7 @@ interface Props {
 }
 
 const { title, description, heading } = Astro.props;
+const lang = getLang(Astro.url.pathname);
 
 // Los textos legales no aportan nada a la búsqueda, pero deben seguir siendo
 // accesibles y rastreables: se indexan sin ofrecerse como resultado destacado.
@@ -17,7 +19,7 @@ const legalLd = {
   url: new URL(Astro.url.pathname, Astro.site).href,
   name: title,
   description,
-  inLanguage: 'es-ES',
+  inLanguage: LANG_TAGS[lang].schema,
   isPartOf: { '@id': 'https://juanalcaraz.es/#website' },
   about: { '@id': 'https://juanalcaraz.es/#person' },
 };

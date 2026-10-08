@@ -1,0 +1,53 @@
+---
+import LegalLayout from '../layouts/LegalLayout.astro';
+import { getLang } from '../i18n';
+
+const lang = getLang(Astro.url.pathname);
+
+const copy = {
+  es: {
+    title: 'Política de Cookies | Juan Alcaraz',
+    description: 'Política de cookies del sitio web de Juan Alcaraz, cineasta y director de cine.',
+    heading: 'POLÍTICA DE COOKIES',
+  },
+  en: {
+    title: 'Cookie Policy | Juan Alcaraz',
+    description: 'Cookie policy of the website of Juan Alcaraz, filmmaker and film director.',
+    heading: 'COOKIE POLICY',
+  },
+}[lang];
+---
+
+<LegalLayout title={copy.title} description={copy.description} heading={copy.heading}>
+  {lang === 'es' ? (
+    <>
+      <h2>1. ¿Qué son las cookies?</h2>
+      <p>Una cookie es un pequeño fichero de texto que se almacena en su navegador cuando visita casi cualquier página web. Su utilidad es que la web sea capaz de recordar su visita cuando vuelva a navegar por esa página. Las cookies suelen almacenar información de carácter técnico, preferencias personales, personalización de contenidos, estadísticas de uso, etc.</p>
+
+      <h2>2. Tipos de cookies en esta web</h2>
+      <p>Esta página web utiliza cookies técnicas o de rendimiento orientadas a optimizar la experiencia de usuario y analíticas para entender la navegación de forma anónima:</p>
+      <ul>
+        <li><strong>Cookies técnicas (Necesarias):</strong> Permiten el funcionamiento básico de la web.</li>
+        <li><strong>Cookies establecidas por terceros:</strong> Servicios como Vimeo o YouTube que incrustamos en los proyectos pueden instalar sus propias cookies analíticas o de publicidad.</li>
+      </ul>
+
+      <h2>3. Desactivación o eliminación</h2>
+      <p>En cualquier momento podrá ejercer su derecho de desactivación o eliminación de cookies de este sitio web. Estas acciones se realizan de forma diferente en función del navegador que esté usando.</p>
+    </>
+  ) : (
+    <>
+      <h2>1. What are cookies?</h2>
+      <p>A cookie is a small text file that is stored in your browser when you visit almost any website. Its purpose is to allow the website to remember your visit when you browse that page again. Cookies usually store technical information, personal preferences, content personalisation, usage statistics, etc.</p>
+
+      <h2>2. Types of cookies on this website</h2>
+      <p>This website uses technical or performance cookies aimed at optimising the user experience, and analytics cookies to understand browsing anonymously:</p>
+      <ul>
+        <li><strong>Technical cookies (Necessary):</strong> They allow the basic operation of the website.</li>
+        <li><strong>Cookies set by third parties:</strong> Services such as Vimeo or YouTube, which we embed in the projects, may install their own analytics or advertising cookies.</li>
+      </ul>
+
+      <h2>3. Disabling or deleting cookies</h2>
+      <p>You may exercise your right to disable or delete cookies from this website at any time. These actions are carried out differently depending on the browser you are using.</p>
+    </>
+  )}
+</LegalLayout>
